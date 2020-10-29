@@ -1,18 +1,36 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
-@Entity('users')
-class User {
+import Account from '@modules/users/infra/typeorm/entities/Account';
+
+@Entity('tb_cadastro_estabelecimento')
+class Establishment {
   @PrimaryGeneratedColumn('increment')
   id: string;
 
   @Column()
-  ds_login: string;
+  id_conta: number;
+
+  @ManyToOne(() => Account)
+  @JoinColumn({ name: 'id_conta' })
+  conta: Account;
 
   @Column()
-  nm_usuario: string;
+  nm_estabelecimento: string;
 
   @Column()
-  ds_senha: string;
+  razao_social: string;
+
+  @Column()
+  cnpj_cpf: string;
+
+  @Column('timestamp')
+  dh_inc: Date;
 }
 
-export default User;
+export default Establishment;

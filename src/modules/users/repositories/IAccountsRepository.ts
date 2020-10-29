@@ -3,4 +3,5 @@ import ICreateAccountDTO from '../dtos/ICreateAccountDTO';
 
 export default interface IAccounntsRepository {
   create(data: ICreateAccountDTO): Promise<Account>;
+  findById(id: number): Promise<Account | undefined>;
 }

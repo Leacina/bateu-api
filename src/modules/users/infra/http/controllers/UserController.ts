@@ -6,7 +6,10 @@ import CreateUserService from '@modules/users/services/CreateUserService';
 export default class UserController {
   public async create(request: Request, response: Response): Promise<Response> {
     const createUser = container.resolve(CreateUserService);
-    const user = await createUser.execute();
+    const user = await createUser.execute(request.body);
+
+    delete user.ds_senha;
+
     return response.json(user);
   }
 }

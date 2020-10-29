@@ -14,18 +14,25 @@ class User {
   @Column()
   ds_senha: string;
 
+  @Column()
   id_conta: number;
 
-  id_perfil: string;
+  @Column()
+  id_perfil: number;
 
+  @Column()
   is_ativo: string;
 
+  @Column()
   tp_usuario: string;
 
-  id_loja: string;
+  @Column()
+  id_loja: number;
 
+  @Column()
   id_estabelecimento: number;
 
+  @Column()
   telefone: string;
 }
 

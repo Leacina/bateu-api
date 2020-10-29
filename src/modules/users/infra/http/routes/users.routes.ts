@@ -1,15 +1,14 @@
 import { Router } from 'express';
 
-// import ensureAuthenticated from '@modules/users/infra/http/middlewares/ensureAuthenticated';
-
+import ensureAuthenticated from '@modules/users/infra/http/middlewares/ensureAuthenticated';
 import UserController from '../controllers/UserController';
 
 const usersRouter = Router();
 
 const userController = new UserController();
 
-// usersRouter.use(ensureAuthenticated);
+usersRouter.use(ensureAuthenticated);
 
-usersRouter.get('/', userController.create);
+usersRouter.post('/', userController.create);
 
 export default usersRouter;

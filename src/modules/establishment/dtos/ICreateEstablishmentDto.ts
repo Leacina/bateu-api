@@ -1,5 +1,6 @@
 export default interface ICreateEstablishmentDto {
-  name: string;
-  email: string;
-  password: string;
+  id_conta: number;
+  nm_estabelecimento: string;
+  razao_social: string;
+  cnpj_cpf: string;
 }

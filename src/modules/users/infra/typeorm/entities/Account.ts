@@ -1,9 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('tb_sistema_conta')
 class Account {
@@ -19,7 +14,7 @@ class Account {
   @Column()
   is_anuncio: string;
 
-  @CreateDateColumn()
+  @Column('timestamp')
   dh_inc: Date;
 }
 

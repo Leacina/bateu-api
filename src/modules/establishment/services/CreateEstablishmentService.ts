@@ -1,10 +1,15 @@
 import { injectable, inject } from 'tsyringe';
 import * as yup from 'yup';
 import AppError from '@shared/errors/AppError';
-import IAccountsRepository from '@modules/users/repositories/IAccountsRepository';
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import Establishment from '../infra/typeorm/entities/Establishment';
 import IEstablishmentsRepository from '../repositories/IEstablishmentsRepository';
-import ICreateEstablishmentDto from '../dtos/ICreateEstablishmentDto';
+
+export interface IRequest {
+  nm_estabelecimento: string;
+  razao_social: string;
+  cnpj_cpf: string;
+}
 
 @injectable()
 export default class CreateEstablishmentService {
@@ -16,20 +21,17 @@ export default class CreateEstablishmentService {
     @inject('EstablishmentsRepository')
     private establishmentsRepository: IEstablishmentsRepository,
 
-    @inject('AccountsRepository')
-    private accountsRepository: IAccountsRepository,
+    @inject('UsersRepository')
+    private usersRepository: IUsersRepository,
   ) {}
 
-  public async execute({
-    cnpj_cpf,
-    id_conta,
-    nm_estabelecimento,
-    razao_social,
-  }: ICreateEstablishmentDto): Promise<Establishment | undefined> {
+  public async execute(
+    { cnpj_cpf, nm_estabelecimento, razao_social }: IRequest,
+    user_id: number,
+  ): Promise<Establishment | undefined> {
     // Validações necessárias para criar o usuário
     const schema = yup.object().shape({
       cnpj_cpf: yup.string().required('CPF/CNPJ não informado'),
-      id_conta: yup.number().required('Conta não informada'),
       nm_estabelecimento: yup
         .string()
         .required('Nome da empresa não informado'),
@@ -40,7 +42,6 @@ export default class CreateEstablishmentService {
     await schema
       .validate({
         cnpj_cpf,
-        id_conta,
         nm_estabelecimento,
         razao_social,
       })
@@ -48,14 +49,11 @@ export default class CreateEstablishmentService {
         throw new AppError(err.message, 422);
       });
 
-    const account = await this.accountsRepository.findById(id_conta);
-    if (!account) {
-      throw new AppError('Conta informada não encontrada', 422);
-    }
+    const user = await this.usersRepository.findById(user_id);
 
     const establishment = await this.establishmentsRepository.create({
       cnpj_cpf,
-      id_conta,
+      id_conta: user.id_conta,
       nm_estabelecimento,
       razao_social,
     });

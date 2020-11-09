@@ -14,21 +14,18 @@ export default class AppointmentController {
   }
 
   public async create(request: Request, response: Response): Promise<Response> {
-    const {
-      cnpj_cpf,
-      id_conta,
-      razao_social,
-      nm_estabelecimento,
-    } = request.body;
+    const { cnpj_cpf, razao_social, nm_estabelecimento } = request.body;
 
     const createEstablishment = container.resolve(CreateEstablishmentService);
 
-    const establishment = await createEstablishment.execute({
-      cnpj_cpf,
-      id_conta,
-      razao_social,
-      nm_estabelecimento,
-    });
+    const establishment = await createEstablishment.execute(
+      {
+        cnpj_cpf,
+        razao_social,
+        nm_estabelecimento,
+      },
+      Number(request.user.id),
+    );
 
     return response.json(establishment);
   }

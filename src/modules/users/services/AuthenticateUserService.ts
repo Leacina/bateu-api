@@ -44,10 +44,20 @@ class AuthenticateUserService {
 
     const { expiresIn, secret } = authConfig.jwt;
 
-    const token = sign({}, secret, {
-      expiresIn,
-      subject: user.id,
-    });
+    const token = sign(
+      {
+        id: user.id,
+        name: user.nm_usuario,
+        email: user.ds_login,
+        is_bateu: user.ds_login === 'administrador@bateu.com.br',
+        account_id: user.id_conta,
+      },
+      secret,
+      {
+        expiresIn,
+        subject: user.id,
+      },
+    );
 
     return {
       user,

@@ -36,12 +36,12 @@ export default class BrandsController {
   }
 
   public async show(request: Request, response: Response): Promise<Response> {
-    const { page, pagesize } = request.query;
+    const { page, pageSize } = request.query;
     const listBrand = container.resolve(ListBrandService);
 
     const brands = await listBrand.execute(Number(request.user.id), {
       page: Number(page),
-      pagesize: Number(pagesize),
+      pageSize: Number(pageSize),
     });
 
     return response.json(brands);

@@ -1,6 +1,6 @@
 export default interface IResponseList {
-  hasnext: boolean;
+  hasNext: boolean;
   items: any;
   page?: number;
-  pagesize?: number;
+  pageSize?: number;
 }

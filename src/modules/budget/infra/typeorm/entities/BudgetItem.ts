@@ -45,6 +45,9 @@ class BudgetItem {
   @Column()
   situacao: string;
 
+  @Column()
+  descricao_peca: string;
+
   @Column('timestamp')
   dh_inc: Date;
 }

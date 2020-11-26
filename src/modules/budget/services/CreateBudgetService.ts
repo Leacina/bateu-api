@@ -48,10 +48,6 @@ export default class CreateBudgetService {
       throw new AppError(err.message, 422);
     });
 
-    for (let i = 0; i < items.length; i++) {
-      console.log(items[i]);
-    }
-
     return {
       orcamento: new Budget(),
       itens: new BudgetItems(),

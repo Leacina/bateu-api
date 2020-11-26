@@ -6,13 +6,13 @@ import ListPiecesByCategoryService from '@modules/piece/services/ListPiecesByCat
 export default class PiecesByShopController {
   public async show(request: Request, response: Response): Promise<Response> {
     const { id } = request.params;
-    const { page, pagesize } = request.query;
+    const { page, pageSize } = request.query;
 
     const listPieceByCategory = container.resolve(ListPiecesByCategoryService);
 
     const piece = await listPieceByCategory.execute({
       id: Number(id),
-      filter: { page: Number(page), pagesize: Number(pagesize) },
+      filter: { page: Number(page), pageSize: Number(pageSize) },
       user_id: Number(request.user.id),
     });
 

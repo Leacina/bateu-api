@@ -45,12 +45,12 @@ class PiecesRepository implements IPiecesRepository {
 
   async find(
     where: IListDTO,
-    { page, pagesize }: IFilterRequestList,
+    { page, pageSize }: IFilterRequestList,
   ): Promise<Piece[]> {
     const pieces = await this.ormRepository.find({
       where,
       skip: page ? page - 1 : 0,
-      take: pagesize + 1 || 11,
+      take: pageSize + 1 || 11,
       relations: [
         'marca',
         'loja',
@@ -67,7 +67,7 @@ class PiecesRepository implements IPiecesRepository {
   async findByCategory(
     id: number,
     id_conta: number,
-    { page, pagesize }: IFilterRequestList,
+    { page, pageSize }: IFilterRequestList,
   ): Promise<Piece[]> {
     const pieces = await this.ormRepository.find({
       where: {
@@ -75,7 +75,7 @@ class PiecesRepository implements IPiecesRepository {
         id_conta,
       },
       skip: page ? page - 1 : 0,
-      take: pagesize + 1 || 11,
+      take: pageSize + 1 || 11,
       relations: [
         'marca',
         'loja',

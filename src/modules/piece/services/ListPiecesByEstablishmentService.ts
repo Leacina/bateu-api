@@ -35,6 +35,6 @@ export default class ListPiecesByEstablishmentService {
       filter,
     );
 
-    return new ListResponse(pieces, filter.page, filter.pagesize);
+    return new ListResponse(pieces, filter.page, filter.pageSize);
   }
 }

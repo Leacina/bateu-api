@@ -55,12 +55,12 @@ class ModelsRepository implements IModelsRepository {
 
   async find(
     where: IListDTO,
-    { page, pagesize }: IFilterRequestList,
+    { page, pageSize }: IFilterRequestList,
   ): Promise<Model[]> {
     const brands = await this.ormRepository.find({
       where,
       skip: page ? page - 1 : 0,
-      take: pagesize + 1 || 11,
+      take: pageSize + 1 || 11,
       relations: ['marca', 'loja', 'estabelecimento', 'conta'],
     });
 

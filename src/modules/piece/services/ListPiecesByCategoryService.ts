@@ -33,6 +33,6 @@ export default class ListPiecesByCategoryService {
       filter,
     );
 
-    return new ListResponse(pieces, filter.page, filter.pagesize);
+    return new ListResponse(pieces, filter.page, filter.pageSize);
   }
 }

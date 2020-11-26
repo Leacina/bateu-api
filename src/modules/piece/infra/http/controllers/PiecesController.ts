@@ -33,12 +33,12 @@ export default class PiecesController {
   }
 
   public async show(request: Request, response: Response): Promise<Response> {
-    const { page, pagesize } = request.query;
+    const { page, pageSize } = request.query;
     const listPiece = container.resolve(ListPieceService);
 
-    const pieces = await listPiece.execute(Number(request.user.id), {
+    const pieces = await listPiece.execute(2, {
       page: Number(page),
-      pagesize: Number(pagesize),
+      pageSize: Number(pageSize),
     });
 
     return response.json(pieces);

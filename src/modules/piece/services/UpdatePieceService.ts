@@ -41,7 +41,7 @@ export default class ListPieceService {
     const user = await this.usersRepository.findById(data.user_id);
     const piece = await this.piecesRepository.findByID(data.id, user.id_conta);
 
-    // TODO: Rever essa atribução
+    // TODO: Rever essa atribuição
     if (piece) {
       piece.id_categoria = data.id_categoria || piece.id_categoria;
       piece.ano_final = data.ano_final || piece.ano_final;

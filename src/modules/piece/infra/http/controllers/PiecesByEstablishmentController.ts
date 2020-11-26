@@ -6,7 +6,7 @@ import ListPiecesByEstablishmentService from '@modules/piece/services/ListPieces
 export default class PiecesByShopController {
   public async show(request: Request, response: Response): Promise<Response> {
     const { id } = request.params;
-    const { page, pagesize } = request.query;
+    const { page, pageSize } = request.query;
 
     const listPieceByEstablishment = container.resolve(
       ListPiecesByEstablishmentService,
@@ -14,7 +14,7 @@ export default class PiecesByShopController {
 
     const piece = await listPieceByEstablishment.execute({
       id_estabelecimento: Number(id),
-      filter: { page: Number(page), pagesize: Number(pagesize) },
+      filter: { page: Number(page), pageSize: Number(pageSize) },
       user_id: Number(request.user.id),
     });
 

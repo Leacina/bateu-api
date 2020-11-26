@@ -1,19 +1,22 @@
 class ListResponse {
-  public readonly hasnext: boolean;
+  public readonly hasNext: boolean;
 
   public readonly items: number;
 
   public readonly page: number;
 
-  public readonly pagesize: number;
+  public readonly pageSize: number;
 
-  constructor(items: any, page: number, pagesize: number) {
-    this.hasnext = items.length > pagesize;
+  constructor(items: any, page: number, pageSize: number) {
+    this.hasNext = items.length > pageSize;
 
-    items.pop();
+    if (items.length > 1 && this.hasNext) {
+      items.pop();
+    }
+
     this.items = items;
     this.page = page || 1;
-    this.pagesize = pagesize || 10;
+    this.pageSize = pageSize || 10;
   }
 }
 

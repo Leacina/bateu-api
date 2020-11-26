@@ -45,14 +45,14 @@ class CategoriesRepository implements ICategoriesRepository {
 
   async find(
     id_conta: number,
-    { page, pagesize }: IFilterRequestList,
+    { page, pageSize }: IFilterRequestList,
   ): Promise<Category[]> {
     const categories = await this.ormRepository.find({
       where: {
         id_conta,
       },
       skip: page ? page - 1 : 0,
-      take: pagesize + 1 || 11,
+      take: pageSize + 1 || 11,
       relations: ['conta'],
     });
 

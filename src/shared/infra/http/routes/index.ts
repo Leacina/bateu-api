@@ -9,17 +9,21 @@ import brandsRouter from '@modules/piece/infra/http/routes/brands.routes';
 import modelsRouter from '@modules/piece/infra/http/routes/models.routes';
 import categoriesRouter from '@modules/piece/infra/http/routes/categories.routes';
 import piecesRouter from '@modules/piece/infra/http/routes/pieces.routes';
+import budgetsRouter from '@modules/budget/infra/http/routes/budget.routes';
+import quotationsRouter from '@modules/quotation/infra/http/routes/quotation.routes';
 
 const routes = Router();
 
-routes.use('/usuario', usersRouter);
-routes.use('/estabelecimento', establishmentsRouter);
-routes.use('/loja', shopsRouter);
-routes.use('/login', sessionsRouter);
-routes.use('/conta', accountsRouter);
-routes.use('/marca', brandsRouter);
-routes.use('/modelo', modelsRouter);
-routes.use('/categoria', categoriesRouter);
-routes.use('/peca', piecesRouter);
+routes.use('/api/usuario', usersRouter);
+routes.use('/api/estabelecimento', establishmentsRouter);
+routes.use('/api/loja', shopsRouter);
+routes.use('/api/signin', sessionsRouter);
+routes.use('/api/conta', accountsRouter);
+routes.use('/api/marca', brandsRouter);
+routes.use('/api/modelo', modelsRouter);
+routes.use('/api/categoria', categoriesRouter);
+routes.use('/api/peca', piecesRouter);
+routes.use('/api/orcamento', budgetsRouter);
+routes.use('/api/cotacao', quotationsRouter);
 
 export default routes;

@@ -15,7 +15,7 @@ export default class QuotationItemsController {
 
     const brands = await listItemsQuotationByIdentifierService.execute(
       identificador,
-      Number(3),
+      Number(request.user.id),
       {
         page: Number(page),
         pageSize: Number(pageSize),

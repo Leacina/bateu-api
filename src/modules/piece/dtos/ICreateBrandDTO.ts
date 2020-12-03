@@ -3,4 +3,5 @@ export default interface ICreateBrandDTO {
   id_estabelecimento: number;
   id_loja: number;
   marca: string;
+  pais: string;
 }

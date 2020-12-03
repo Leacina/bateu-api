@@ -39,6 +39,9 @@ class Brand {
   @Column()
   marca: string;
 
+  @Column()
+  pais: string;
+
   @Column('timestamp')
   dh_inc: Date;
 }

@@ -10,7 +10,7 @@ export default class BudgetsController {
 
     const listBudgets = container.resolve(ListBudgetsService);
 
-    const brands = await listBudgets.execute(Number(3), {
+    const brands = await listBudgets.execute(Number(request.user.id), {
       page: Number(page),
       pageSize: Number(pageSize),
     });
@@ -22,7 +22,10 @@ export default class BudgetsController {
 
     const listBudgetByIdService = container.resolve(ListBudgetByIdService);
 
-    const brands = await listBudgetByIdService.execute(Number(id), Number(3));
+    const brands = await listBudgetByIdService.execute(
+      Number(id),
+      Number(request.user.id),
+    );
     return response.json(brands);
   }
 }

@@ -13,6 +13,8 @@ establishmentsRouter.use(ensureAuthenticate);
 
 establishmentsRouter.get('/:id', establishmentsController.index);
 establishmentsRouter.post('/', establishmentsController.create);
+establishmentsRouter.get('/', establishmentsController.show);
+establishmentsRouter.put('/:id', establishmentsController.update);
 establishmentsRouter.get('/conta/:id', establishmentsAccountController.show);
 
 export default establishmentsRouter;

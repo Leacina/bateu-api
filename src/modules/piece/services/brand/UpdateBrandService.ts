@@ -7,6 +7,7 @@ interface IRequest {
   marca: string;
   brand_id: number;
   user_id: number;
+  pais: string;
 }
 
 @injectable()
@@ -18,12 +19,18 @@ export default class ListBrandService {
     private usersRepository: IUsersRepository,
   ) {}
 
-  public async execute({ brand_id, user_id, marca }: IRequest): Promise<Brand> {
+  public async execute({
+    brand_id,
+    user_id,
+    marca,
+    pais,
+  }: IRequest): Promise<Brand> {
     const user = await this.usersRepository.findById(user_id);
     const brand = await this.brandsRepository.findByID(brand_id, user.id_conta);
 
     if (brand) {
       brand.marca = marca;
+      brand.pais = pais;
       await this.brandsRepository.save(brand);
     }
 

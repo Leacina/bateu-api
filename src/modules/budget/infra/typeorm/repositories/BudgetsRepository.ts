@@ -6,6 +6,14 @@ import IProcessBudgetDTO from '@modules/budget/dtos/IProcessBudgetDTO';
 import ICreateBudgetDTO from '../../../dtos/ICreateBudgetDTO';
 import Budget from '../entities/Budget';
 
+// eslint-disable-next-line no-shadow
+enum SituationEnum {
+  CANCEL = 'C',
+  FULL_SALE = 'VI',
+  PARTIAL_SALE = 'VP',
+  PENDING = 'P',
+}
+
 export default class BudgetsRepository implements IBudgetsRepository {
   private ormRepository: Repository<Budget>;
 
@@ -78,7 +86,9 @@ export default class BudgetsRepository implements IBudgetsRepository {
     // eslint-disable-next-line no-unused-expressions
     budget as Budget;
 
-    budget.situacao = isConfirm ? 'Confirmado' : 'Cancelado';
+    budget.situacao = isConfirm
+      ? SituationEnum.FULL_SALE
+      : SituationEnum.CANCEL;
 
     await this.ormRepository.save(budget);
 

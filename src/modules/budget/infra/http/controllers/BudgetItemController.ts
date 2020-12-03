@@ -10,10 +10,14 @@ export default class BudgetsController {
     const { page, pageSize } = request.query;
     const listBudgetsItems = container.resolve(ListItemsByBudget);
 
-    const brands = await listBudgetsItems.execute(Number(id), Number(3), {
-      page: Number(page),
-      pageSize: Number(pageSize),
-    });
+    const brands = await listBudgetsItems.execute(
+      Number(id),
+      Number(request.user.id),
+      {
+        page: Number(page),
+        pageSize: Number(pageSize),
+      },
+    );
 
     return response.json(brands);
   }

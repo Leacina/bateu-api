@@ -10,7 +10,7 @@ export default class BudgetsController {
 
     const listBudgets = container.resolve(ListBudgetsByEmailService);
 
-    const brands = await listBudgets.execute(email, Number(3), {
+    const brands = await listBudgets.execute(email, Number(request.user.id), {
       page: Number(page),
       pageSize: Number(pageSize),
     });

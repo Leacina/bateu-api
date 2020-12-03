@@ -25,6 +25,12 @@ export default class EstablishmentRepository
     return establishment;
   }
 
+  async find(): Promise<Establishment[] | undefined> {
+    const establishment = await this.ormRepository.find();
+
+    return establishment;
+  }
+
   async create(
     data: ICreateEstablishmentDTO,
   ): Promise<Establishment | undefined> {
@@ -34,5 +40,9 @@ export default class EstablishmentRepository
     await this.ormRepository.save(establishment);
 
     return establishment;
+  }
+
+  async save(establishment: Establishment): Promise<Establishment> {
+    return this.ormRepository.save(establishment);
   }
 }

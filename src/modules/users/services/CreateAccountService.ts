@@ -69,6 +69,7 @@ class CreateUserService {
         .toLowerCase()}.com.br`,
       ds_senha: '$administrador102030$',
       id_conta: account.id,
+      id_estabelecimento: null,
       id_perfil: 999,
       nm_usuario: 'Administrador',
     });

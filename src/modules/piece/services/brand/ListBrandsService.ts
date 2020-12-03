@@ -33,6 +33,6 @@ export default class ListBrandService {
       filter,
     );
 
-    return new ListResponse(brands, filter.page, filter.pagesize);
+    return new ListResponse(brands, filter.page, filter.pageSize);
   }
 }

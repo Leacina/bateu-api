@@ -9,7 +9,7 @@ import UpdateBrandService from '@modules/piece/services/brand/UpdateBrandService
 
 export default class BrandsController {
   public async create(request: Request, response: Response): Promise<Response> {
-    const { id_estabelecimento, id_loja, marca } = request.body;
+    const { id_estabelecimento, id_loja, marca, pais } = request.body;
     const createBrands = container.resolve(CreateBrandService);
 
     const brand = await createBrands.execute({
@@ -17,6 +17,7 @@ export default class BrandsController {
       id_loja,
       marca,
       user_id: Number(request.user.id),
+      pais,
     });
 
     return response.json(brand);
@@ -61,13 +62,14 @@ export default class BrandsController {
 
   public async update(request: Request, response: Response): Promise<Response> {
     const { id } = request.params;
-    const { marca } = request.body;
+    const { marca, pais } = request.body;
     const updateBrand = container.resolve(UpdateBrandService);
 
     const brand = await updateBrand.execute({
       marca,
       brand_id: Number(id),
       user_id: Number(request.user.id),
+      pais,
     });
 
     return response.json(brand);

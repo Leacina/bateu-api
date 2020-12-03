@@ -8,6 +8,14 @@ import ICreateQuotationItemDTO from '../../../dtos/ICreateQuotationItemDTO';
 import QuotationItem from '../entities/QuotationItem';
 import Quotation from '../entities/Quotation';
 
+// eslint-disable-next-line no-shadow
+enum SituationEnum {
+  CANCEL = 'C',
+  FULL_SALE = 'VI',
+  PARTIAL_SALE = 'VP',
+  PENDING = 'P',
+}
+
 export default class QuotationItemsRepository
   implements IQuotationItemsRepository {
   private ormRepository: Repository<QuotationItem>;
@@ -56,9 +64,6 @@ export default class QuotationItemsRepository
       },
     });
 
-    // eslint-disable-next-line no-unused-expressions
-    quotationItem as QuotationItem;
-
     // Altera estado produto
     quotationItem.situacao = isConfirm ? 'Confirmado' : 'Cancelado';
 
@@ -68,9 +73,18 @@ export default class QuotationItemsRepository
     // Busca para verificar se todos estão cancelados/confirmados/pendentes
     const quotationItems = await this.ormRepository.find({
       where: {
-        id_cotacao: quotationItem.id_cotacao,
-        situacao: 'Pendente',
+        identificador_cotacao: quotationItem.identificador_cotacao,
       },
+    });
+
+    // Busca todos os itens cancelados
+    const cancel_sale = quotationItems.filter(item => {
+      return item.situacao === 'Cancelado';
+    });
+
+    // Busca todos os itens pendentes
+    const pending = quotationItems.filter(item => {
+      return item.situacao === 'Pendente';
     });
 
     // Busca a cotação para alterar a situação
@@ -80,17 +94,27 @@ export default class QuotationItemsRepository
       },
     });
 
-    // eslint-disable-next-line no-unused-expressions
-    quotation as Quotation[];
-
     // Se encontrou alguma coisa, então ainda esta parcial... Pois existe items
     // a ser confirmado/cancelado ainda
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < quotation.length; i++) {
-      if (quotationItems.length === 0) {
-        quotation[i].situacao = quotationItem.situacao;
+      // Somentee muda a situação se não tiver nada pendente
+      if (pending.length === 0) {
+        // Se todos estiverem cancelados, mostra como cancelado a venda
+        if (cancel_sale.length === quotationItems.length) {
+          quotation[i].situacao = SituationEnum.CANCEL;
+        }
+        // Se possuir somente alguns cancelados e nenhum pendente
+        // foi uma venda parcial
+        else if (cancel_sale.length > 0) {
+          quotation[i].situacao = SituationEnum.PARTIAL_SALE;
+        }
+        // Se for vendido tudo, venda integral
+        else {
+          quotation[i].situacao = SituationEnum.FULL_SALE;
+        }
       } else {
-        quotation[i].situacao = 'Parcial';
+        quotation[i].situacao = SituationEnum.PENDING;
       }
     }
 

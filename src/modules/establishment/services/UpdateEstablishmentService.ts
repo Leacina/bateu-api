@@ -2,7 +2,6 @@ import { injectable, inject } from 'tsyringe';
 import * as yup from 'yup';
 import AppError from '@shared/errors/AppError';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
-import User from '@modules/users/infra/typeorm/entities/User';
 import Establishment from '../infra/typeorm/entities/Establishment';
 import IEstablishmentsRepository from '../repositories/IEstablishmentsRepository';
 
@@ -17,13 +16,8 @@ export interface IRequest {
   quantidade_lojas: number;
 }
 
-interface IResponse {
-  estabelecimento: Establishment;
-  usuario: User;
-}
-
 @injectable()
-export default class CreateEstablishmentService {
+export default class UpdateEstablishmentService {
   /**
    * Realiza a injeção de dependencia de acordo com a pasta Provider.
    * @param establishmentsRepository
@@ -37,6 +31,7 @@ export default class CreateEstablishmentService {
   ) {}
 
   public async execute(
+    establishment_id: number,
     {
       cnpj_cpf,
       nm_estabelecimento,
@@ -48,7 +43,7 @@ export default class CreateEstablishmentService {
       telefone_responsavel,
     }: IRequest,
     user_id: number,
-  ): Promise<IResponse | undefined> {
+  ): Promise<Establishment | undefined> {
     // Validações necessárias para criar o usuário
     const schema = yup.object().shape({
       // cnpj_cpf: yup.string().required('CPF/CNPJ não informado'),
@@ -86,28 +81,23 @@ export default class CreateEstablishmentService {
 
     const user = await this.usersRepository.findById(user_id);
 
-    const establishment = await this.establishmentsRepository.create({
-      cnpj_cpf,
-      id_conta: user.id_conta,
-      nm_estabelecimento,
-      razao_social: nm_estabelecimento,
-      responsavel,
-      cidade,
-      estado,
-      quantidade_lojas,
-      telefone_responsavel,
-    });
+    const establishment = await this.establishmentsRepository.findById(
+      establishment_id,
+    );
 
-    const userModel = await this.usersRepository.create({
-      ds_login: `administrador@${nm_estabelecimento
-        .replace(/\s/g, '')
-        .toLowerCase()}.com.br`,
-      ds_senha: '$administrador102030$',
-      id_estabelecimento: Number(establishment.id),
-      id_perfil: 999,
-      nm_usuario: 'Administrador',
-    });
+    // Seta as variaveis para alterar
+    establishment.cnpj_cpf = cnpj_cpf;
+    establishment.id_conta = user.id_conta;
+    establishment.nm_estabelecimento = nm_estabelecimento;
+    establishment.razao_social = razao_social;
+    establishment.responsavel = responsavel;
+    establishment.cidade = cidade;
+    establishment.estado = estado;
+    establishment.quantidade_lojas = quantidade_lojas;
+    establishment.telefone_responsavel = telefone_responsavel;
 
-    return { estabelecimento: establishment, usuario: userModel };
+    await this.establishmentsRepository.save(establishment);
+
+    return establishment;
   }
 }

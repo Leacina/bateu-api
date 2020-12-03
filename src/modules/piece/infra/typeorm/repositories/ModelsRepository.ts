@@ -27,7 +27,7 @@ class ModelsRepository implements IModelsRepository {
       modelo,
       dh_inc: new Date(),
     });
-
+    console.log('suceecsso');
     await this.ormRepository.save(brand);
 
     return brand;
@@ -46,7 +46,7 @@ class ModelsRepository implements IModelsRepository {
     const brand = await this.ormRepository.findOne({
       where: {
         id,
-        id_conta,
+        // id_conta,
       },
     });
 
@@ -58,7 +58,7 @@ class ModelsRepository implements IModelsRepository {
     { page, pageSize }: IFilterRequestList,
   ): Promise<Model[]> {
     const brands = await this.ormRepository.find({
-      where,
+      // where,
       skip: page ? page - 1 : 0,
       take: pageSize + 1 || 11,
       relations: ['marca', 'loja', 'estabelecimento', 'conta'],

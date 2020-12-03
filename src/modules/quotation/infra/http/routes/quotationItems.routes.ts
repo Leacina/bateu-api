@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-// import ensureAuthenticated from '@modules/users/infra/http/middlewares/ensureAuthenticated';
+import ensureAuthenticated from '@modules/users/infra/http/middlewares/ensureAuthenticated';
 import QuotationItemController from '../controllers/QuotationItemController';
 import QuotationItemConfirmController from '../controllers/QuotationItemConfirmController';
 import QuotationItemCancelController from '../controllers/QuotationItemCancelController';
@@ -11,7 +11,7 @@ const quotationItemController = new QuotationItemController();
 const quotationItemConfirmController = new QuotationItemConfirmController();
 const quotationItemCancelController = new QuotationItemCancelController();
 
-// budgetItemsRouter.use(ensureAuthenticated);
+quotationItemsRouter.use(ensureAuthenticated);
 quotationItemsRouter.get(
   '/:identificador/itens',
   quotationItemController.index,

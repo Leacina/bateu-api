@@ -3,7 +3,7 @@ import IResponseList from '@shared/utils/dtos/IResponseList';
 import IEstablishmentsRepository from '../repositories/IEstablishmentsRepository';
 
 @injectable()
-class ListEstablishmentByAccountIDService {
+class ListEstablishmentService {
   /**
    * Realiza a injeção de dependencia de acordo com a pasta Provider.
    * @param establishmentsRepository
@@ -13,13 +13,11 @@ class ListEstablishmentByAccountIDService {
     private establishmentsRepository: IEstablishmentsRepository,
   ) {}
 
-  public async execute(id: number): Promise<IResponseList | undefined> {
-    const establishment = await this.establishmentsRepository.findByAccountId(
-      id,
-    );
+  public async execute(): Promise<IResponseList | undefined> {
+    const establishment = await this.establishmentsRepository.find();
 
     return { hasNext: true, items: establishment };
   }
 }
 
-export default ListEstablishmentByAccountIDService;
+export default ListEstablishmentService;

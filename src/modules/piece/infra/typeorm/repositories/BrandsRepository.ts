@@ -17,12 +17,14 @@ class BrandsRepository implements IBrandsRepository {
     id_estabelecimento,
     id_loja,
     marca,
+    pais,
   }: ICreateBrandDTO): Promise<Brand> {
     const brand = this.ormRepository.create({
       id_conta,
       id_estabelecimento: id_estabelecimento || 0,
       id_loja: id_loja || 0,
       marca,
+      pais,
       dh_inc: new Date(),
     });
 
@@ -44,7 +46,7 @@ class BrandsRepository implements IBrandsRepository {
     const brand = await this.ormRepository.findOne({
       where: {
         id,
-        id_conta,
+        // id_conta,
       },
     });
 
@@ -56,7 +58,7 @@ class BrandsRepository implements IBrandsRepository {
     { page, pageSize }: IFilterRequestList,
   ): Promise<Brand[]> {
     const brands = await this.ormRepository.find({
-      where,
+      // where,
       skip: page ? page - 1 : 0,
       take: pageSize + 1 || 11,
       relations: ['loja', 'estabelecimento', 'conta'],

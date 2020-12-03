@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-// import ensureAuthenticated from '@modules/users/infra/http/middlewares/ensureAuthenticated';
+import ensureAuthenticated from '@modules/users/infra/http/middlewares/ensureAuthenticated';
 import BudgetsController from '../controllers/BudgetController';
 import BudgetByEmailController from '../controllers/BudgetByEmailController';
 import BudgetConfirmController from '../controllers/BudgetConfirmController';
@@ -13,7 +13,7 @@ const budgetByEmailController = new BudgetByEmailController();
 const budgetConfirmController = new BudgetConfirmController();
 const budgetCancelController = new BudgetCancelController();
 
-// budgetsRouter.use(ensureAuthenticated);
+budgetsRouter.use(ensureAuthenticated);
 budgetsRouter.use('/', budgetItemsRouter);
 budgetsRouter.get('/', budgetsController.show);
 budgetsRouter.get('/:id', budgetsController.index);

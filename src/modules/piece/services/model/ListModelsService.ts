@@ -27,6 +27,6 @@ export default class ListModelService {
       filter,
     );
 
-    return new ListResponse(models, filter.page, filter.pagesize);
+    return new ListResponse(models, filter.page, filter.pageSize);
   }
 }

@@ -51,6 +51,8 @@ class AuthenticateUserService {
         email: user.ds_login,
         is_bateu: user.ds_login === 'administrador@bateu.com.br',
         account_id: user.id_conta,
+        establishment_id: user.id_estabelecimento,
+        shop_id: user.id_loja,
       },
       secret,
       {

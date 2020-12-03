@@ -9,10 +9,13 @@ export default class QuotationsController {
 
     const listQuotationsService = container.resolve(ListQuotationsService);
 
-    const quotations = await listQuotationsService.execute(Number(3), {
-      page: Number(page),
-      pageSize: Number(pageSize),
-    });
+    const quotations = await listQuotationsService.execute(
+      Number(request.user.id),
+      {
+        page: Number(page),
+        pageSize: Number(pageSize),
+      },
+    );
     return response.json(quotations);
   }
 }

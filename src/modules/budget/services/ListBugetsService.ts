@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { inject, injectable } from 'tsyringe';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import IResponseList from '@shared/utils/dtos/IResponseList';
@@ -32,6 +33,20 @@ export default class ListBudgetsService {
       },
       filter,
     );
+
+    budgets.map(budget => {
+      if (budget.situacao === 'P') {
+        budget.situacao = 'Pendente';
+      } else if (budget.situacao === 'VP') {
+        budget.situacao = 'Venda Parcial';
+      } else if (budget.situacao === 'VI') {
+        budget.situacao = 'Venda Integral';
+      } else if (budget.situacao === 'C') {
+        budget.situacao = 'Cancelado';
+      }
+
+      return budget;
+    });
 
     return new ListResponse(budgets, filter.page, filter.pageSize);
   }

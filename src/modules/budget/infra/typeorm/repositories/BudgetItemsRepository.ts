@@ -7,6 +7,14 @@ import ICreateBudgetItemDTO from '../../../dtos/ICreateBudgetItemDTO';
 import BudgetItem from '../entities/BudgetItem';
 import Budget from '../entities/Budget';
 
+// eslint-disable-next-line no-shadow
+enum SituationEnum {
+  CANCEL = 'C',
+  FULL_SALE = 'VI',
+  PARTIAL_SALE = 'VP',
+  PENDING = 'P',
+}
+
 export default class BudgetItemsRepository implements IBudgetItemsRepository {
   private ormRepository: Repository<BudgetItem>;
 
@@ -54,9 +62,6 @@ export default class BudgetItemsRepository implements IBudgetItemsRepository {
       },
     });
 
-    // eslint-disable-next-line no-unused-expressions
-    budgetItem as BudgetItem;
-
     // Altera estado produto
     budgetItem.situacao = isConfirm ? 'Confirmado' : 'Cancelado';
 
@@ -67,8 +72,17 @@ export default class BudgetItemsRepository implements IBudgetItemsRepository {
     const budgetItems = await this.ormRepository.find({
       where: {
         id_orcamento: budgetItem.id_orcamento,
-        situacao: 'Pendente',
       },
+    });
+
+    // Busca todos os itens cancelados
+    const cancel_sale = budgetItems.filter(item => {
+      return item.situacao === 'Cancelado';
+    });
+
+    // Busca todos os itens pendentes
+    const pending = budgetItems.filter(item => {
+      return item.situacao === 'Pendente';
     });
 
     // Busca o orçamento para alterar a situação
@@ -78,15 +92,23 @@ export default class BudgetItemsRepository implements IBudgetItemsRepository {
       },
     });
 
-    // eslint-disable-next-line no-unused-expressions
-    budget as Budget;
-
-    // Se encontrou alguma coisa, então ainda esta parcial... Pois existe items
-    // a ser confirmado/cancelado ainda
-    if (budgetItems.length === 0) {
-      budget.situacao = budgetItem.situacao;
+    // Somentee muda a situação se não tiver nada pendente
+    if (pending.length === 0) {
+      // Se todos estiverem cancelados, mostra como cancelado a venda
+      if (cancel_sale.length === budgetItems.length) {
+        budget.situacao = SituationEnum.CANCEL;
+      }
+      // Se possuir somente alguns cancelados e nenhum pendente
+      // foi uma venda parcial
+      else if (cancel_sale.length > 0) {
+        budget.situacao = SituationEnum.PARTIAL_SALE;
+      }
+      // Se for vendido tudo, venda integral
+      else {
+        budget.situacao = SituationEnum.FULL_SALE;
+      }
     } else {
-      budget.situacao = 'Parcial';
+      budget.situacao = SituationEnum.PENDING;
     }
 
     // Save

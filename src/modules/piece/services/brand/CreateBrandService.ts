@@ -9,6 +9,7 @@ import Brand from '../../infra/typeorm/entities/Brand';
 interface IRequest {
   marca: string;
   id_estabelecimento: number;
+  pais: string;
   id_loja: number;
   user_id: number;
 }
@@ -32,10 +33,15 @@ export default class CreateBrandService {
     id_estabelecimento,
     id_loja,
     marca,
+    pais,
     user_id,
   }: IRequest): Promise<Brand | undefined> {
     if (!marca) {
       throw new AppError('Nome da marca não informada');
+    }
+
+    if (!pais) {
+      throw new AppError('País da marca não informada');
     }
 
     const user = await this.usersRepository.findById(user_id);
@@ -78,6 +84,7 @@ export default class CreateBrandService {
       id_conta: user.id_conta,
       id_loja,
       id_estabelecimento,
+      pais,
     });
     return brand;
   }

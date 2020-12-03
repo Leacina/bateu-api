@@ -2,7 +2,9 @@ import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
 import ListEstablishmentByIDService from '@modules/establishment/services/ListEstablishmentByIDService';
+import ListEstablishmentService from '@modules/establishment/services/ListEstablishmentService';
 import CreateEstablishmentService from '@modules/establishment/services/CreateEstablishmentService';
+import UpdateEstablishmentService from '@modules/establishment/services/UpdateEstablishmentService';
 
 export default class AppointmentController {
   public async index(request: Request, response: Response): Promise<Response> {
@@ -13,8 +15,26 @@ export default class AppointmentController {
     return response.json(establishments);
   }
 
+  public async show(request: Request, response: Response): Promise<Response> {
+    const listEstablishmentService = container.resolve(
+      ListEstablishmentService,
+    );
+    const establishments = await listEstablishmentService.execute();
+
+    return response.json(establishments);
+  }
+
   public async create(request: Request, response: Response): Promise<Response> {
-    const { cnpj_cpf, razao_social, nm_estabelecimento } = request.body;
+    const {
+      cnpj_cpf,
+      razao_social,
+      nm_estabelecimento,
+      responsavel,
+      telefone_responsavel,
+      cidade,
+      estado,
+      quantidade_lojas,
+    } = request.body;
 
     const createEstablishment = container.resolve(CreateEstablishmentService);
 
@@ -23,6 +43,46 @@ export default class AppointmentController {
         cnpj_cpf,
         razao_social,
         nm_estabelecimento,
+        responsavel,
+        telefone_responsavel,
+        cidade,
+        estado,
+        quantidade_lojas,
+      },
+      Number(request.user.id),
+    );
+
+    return response.json(establishment);
+  }
+
+  public async update(request: Request, response: Response): Promise<Response> {
+    const { id } = request.params;
+    const {
+      cnpj_cpf,
+      razao_social,
+      nm_estabelecimento,
+      responsavel,
+      telefone_responsavel,
+      cidade,
+      estado,
+      quantidade_lojas,
+    } = request.body;
+
+    const updateEstablishmentService = container.resolve(
+      UpdateEstablishmentService,
+    );
+
+    const establishment = await updateEstablishmentService.execute(
+      Number(id),
+      {
+        cnpj_cpf,
+        razao_social,
+        nm_estabelecimento,
+        responsavel,
+        telefone_responsavel,
+        cidade,
+        estado,
+        quantidade_lojas,
       },
       Number(request.user.id),
     );

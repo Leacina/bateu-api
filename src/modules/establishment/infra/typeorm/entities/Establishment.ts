@@ -29,6 +29,21 @@ class Establishment {
   @Column()
   cnpj_cpf: string;
 
+  @Column()
+  responsavel: string;
+
+  @Column()
+  telefone_responsavel: string;
+
+  @Column()
+  cidade: string;
+
+  @Column()
+  estado: string;
+
+  @Column()
+  quantidade_lojas: number;
+
   @Column('timestamp')
   dh_inc: Date;
 }

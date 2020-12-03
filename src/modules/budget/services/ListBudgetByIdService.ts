@@ -25,6 +25,16 @@ export default class ListBudgetsByIdService {
       id_loja,
     });
 
+    if (budgets.situacao === 'P') {
+      budgets.situacao = 'Pendente';
+    } else if (budgets.situacao === 'VP') {
+      budgets.situacao = 'Venda Parcial';
+    } else if (budgets.situacao === 'VI') {
+      budgets.situacao = 'Venda Integral';
+    } else if (budgets.situacao === 'C') {
+      budgets.situacao = 'Cancelado';
+    }
+
     return budgets;
   }
 }

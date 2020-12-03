@@ -12,7 +12,7 @@ const piecesByEstablishmentController = new PiecesByEstablishmentController();
 const piecesByShopController = new PiecesByShopController();
 const piecesByCategoryController = new PiecesByCategoryController();
 
-// piecesRouter.use(ensureAuthenticated);
+piecesRouter.use(ensureAuthenticated);
 piecesRouter.post('/', piecesController.create);
 piecesRouter.get('/', piecesController.show);
 piecesRouter.get('/:id', piecesController.index);

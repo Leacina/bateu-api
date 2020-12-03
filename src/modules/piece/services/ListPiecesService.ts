@@ -8,7 +8,8 @@ import IPiecesRepository from '../repositories/IPiecesRepository';
 @injectable()
 export default class ListPiecesService {
   constructor(
-    @inject('PiecesRepository') private piecesRepository: IPiecesRepository,
+    @inject('PiecesRepository')
+    private piecesRepository: IPiecesRepository,
 
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,

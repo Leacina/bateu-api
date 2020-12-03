@@ -5,6 +5,8 @@ import AppError from '@shared/errors/AppError';
 
 export interface TokenPayload {
   iat: number;
+  establishment_id: number;
+  shop_id: number;
   exp: number;
   sub: string;
 }
@@ -24,10 +26,12 @@ export default function (
   try {
     const decoded = verify(token, authConfig.jwt.secret);
 
-    const { sub } = decoded as TokenPayload;
+    const { sub, establishment_id, shop_id } = decoded as TokenPayload;
 
     request.user = {
-      id: sub,
+      id: Number(sub),
+      establishment_id,
+      shop_id,
     };
 
     return next();

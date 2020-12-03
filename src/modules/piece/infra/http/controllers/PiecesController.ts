@@ -36,7 +36,7 @@ export default class PiecesController {
     const { page, pageSize } = request.query;
     const listPiece = container.resolve(ListPieceService);
 
-    const pieces = await listPiece.execute(2, {
+    const pieces = await listPiece.execute(Number(request.user.id), {
       page: Number(page),
       pageSize: Number(pageSize),
     });

@@ -3,6 +3,7 @@ import IBudgetsRepository from '@modules/budget/repositories/IBudgetsRepository'
 import IListDTO from '@modules/piece/dtos/IListDTO';
 import IFilterRequestList from '@shared/utils/dtos/IFilterRequestList';
 import IProcessBudgetDTO from '@modules/budget/dtos/IProcessBudgetDTO';
+import FindFilters from '@shared/utils/implementations/common';
 import ICreateBudgetDTO from '../../../dtos/ICreateBudgetDTO';
 import Budget from '../entities/Budget';
 
@@ -34,17 +35,45 @@ export default class BudgetsRepository implements IBudgetsRepository {
 
   async find(
     { id_loja, id_estabelecimento, id_conta }: IListDTO,
-    { page, pageSize }: IFilterRequestList,
+    { search, page, pageSize }: IFilterRequestList,
   ): Promise<Budget[]> {
+    const searchSplit = search ? search.split(';') : [];
+    const findFilters = new FindFilters(searchSplit);
+
+    let where = 'true ';
+
+    // Se for filtro avançado, procurar por cada campos
+    if (searchSplit.length > 1) {
+      where += `and budget.emitente like '%${findFilters.findSearch(
+        'emitente',
+      )}%' and
+      budget.emitente_email like '%${findFilters.findSearch(
+        'emitente_email',
+      )}%' and
+      budget.emitente_telefone like '%${findFilters.findSearch(
+        'emitente_telefone',
+      )}%'`;
+    } else if (searchSplit.length === 1) {
+      where += `and (budget.emitente like '%${searchSplit[0]}%' or
+      budget.emitente_email like '%${searchSplit[0]}%' or
+      budget.emitente_telefone like '%${searchSplit[0]}%')`;
+    }
+
+    where += ` and budget.id_estabelecimento = ${id_estabelecimento} and budget.id_loja = ${id_loja}`;
+
     const budgets = await this.ormRepository.find({
-      where: {
-        id_estabelecimento,
-        id_loja,
-        id_conta,
+      join: {
+        alias: 'budget',
+      },
+      where: qb => {
+        qb.where(where);
       },
       skip: page ? page - 1 : 0,
       take: pageSize + 1 || 11,
-      relations: ['loja', 'estabelecimento', 'conta'],
+      relations: ['loja', 'estabelecimento', 'conta', 'items'],
+      order: {
+        id: 'DESC',
+      },
     });
 
     return budgets;
@@ -60,11 +89,14 @@ export default class BudgetsRepository implements IBudgetsRepository {
         emitente_email: budget_email,
         id_estabelecimento,
         id_loja,
-        id_conta,
+        // id_conta,
       },
       skip: page ? page - 1 : 0,
       take: pageSize + 1 || 11,
       relations: ['loja', 'estabelecimento', 'conta'],
+      order: {
+        id: 'DESC',
+      },
     });
 
     return budgets;
@@ -79,7 +111,7 @@ export default class BudgetsRepository implements IBudgetsRepository {
         id: budget_id,
         id_estabelecimento,
         id_loja,
-        id_conta,
+        // id_conta,
       },
     });
 
@@ -104,9 +136,9 @@ export default class BudgetsRepository implements IBudgetsRepository {
         id,
         id_estabelecimento,
         id_loja,
-        id_conta,
+        // id_conta,
       },
-      relations: ['loja', 'estabelecimento', 'conta'],
+      relations: ['loja', 'estabelecimento', 'conta', 'items'],
     });
 
     return budgets;

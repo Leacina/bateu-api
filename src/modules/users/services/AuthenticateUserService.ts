@@ -2,6 +2,7 @@ import { sign } from 'jsonwebtoken';
 import authConfig from '@config/auth';
 import AppError from '@shared/errors/AppError';
 import { injectable, inject } from 'tsyringe';
+import IShopsRepository from '@modules/establishment/repositories/IShopsRepository';
 import User from '../infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUsersRepository';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
@@ -21,6 +22,9 @@ class AuthenticateUserService {
   constructor(
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+
+    @inject('ShopsRepository')
+    private shopsRepository: IShopsRepository,
 
     @inject('HashProvider')
     private hashProvider: IHashProvider,
@@ -44,6 +48,8 @@ class AuthenticateUserService {
 
     const { expiresIn, secret } = authConfig.jwt;
 
+    const shop = await this.shopsRepository.findById(user.id_loja);
+
     const token = sign(
       {
         id: user.id,
@@ -53,6 +59,7 @@ class AuthenticateUserService {
         account_id: user.id_conta,
         establishment_id: user.id_estabelecimento,
         shop_id: user.id_loja,
+        shop_name: shop ? shop.nm_loja : '',
       },
       secret,
       {

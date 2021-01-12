@@ -10,6 +10,7 @@ const quotationController = new QuotationController();
 
 quotationsRouter.use(ensureAuthenticated);
 quotationsRouter.use('/', budgetItemsRouter);
+quotationsRouter.post('/', quotationController.create);
 quotationsRouter.get('/', quotationController.show);
 
 export default quotationsRouter;

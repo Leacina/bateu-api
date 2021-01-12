@@ -120,6 +120,9 @@ class Piece {
   @Column()
   is_promocional: string;
 
+  @Column()
+  peca_destaque: number;
+
   @Column('timestamp')
   dh_inc: Date;
 }

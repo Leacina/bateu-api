@@ -16,7 +16,7 @@ export default class ListItemsQuotationByIndetifierService {
   ) {}
 
   public async execute(
-    quotation_identifier: string,
+    id_cotacao: number,
     user_id: number,
     filter?: IFilterRequestList,
   ): Promise<IResponseList> {
@@ -27,7 +27,7 @@ export default class ListItemsQuotationByIndetifierService {
     } = await this.usersRepository.findById(user_id);
 
     const quotationItems = await this.quotationItemsRepository.find(
-      quotation_identifier,
+      id_cotacao,
       {
         id_conta,
         id_estabelecimento,

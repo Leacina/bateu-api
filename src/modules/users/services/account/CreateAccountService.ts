@@ -3,11 +3,11 @@ import { injectable, inject } from 'tsyringe';
 import * as yup from 'yup';
 import AppError from '@shared/errors/AppError';
 
-import Account from '../infra/typeorm/entities/Account';
-import IAccountsRepository from '../repositories/IAccountsRepository';
-import IUsersRepository from '../repositories/IUsersRepository';
-import ICreateAccountDTO from '../dtos/ICreateAccountDTO';
-import User from '../infra/typeorm/entities/User';
+import Account from '../../infra/typeorm/entities/Account';
+import IAccountsRepository from '../../repositories/IAccountsRepository';
+import IUsersRepository from '../../repositories/IUsersRepository';
+import ICreateAccountDTO from '../../dtos/ICreateAccountDTO';
+import User from '../../infra/typeorm/entities/User';
 
 interface IRequest {
   conta: Account;

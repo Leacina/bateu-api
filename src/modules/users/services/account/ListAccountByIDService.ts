@@ -1,6 +1,6 @@
 import { inject, injectable } from 'tsyringe';
-import Account from '../infra/typeorm/entities/Account';
-import IAccountsRepository from '../repositories/IAccountsRepository';
+import Account from '../../infra/typeorm/entities/Account';
+import IAccountsRepository from '../../repositories/IAccountsRepository';
 
 @injectable()
 export default class ListAccountByIDService {

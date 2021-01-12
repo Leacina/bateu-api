@@ -54,14 +54,27 @@ class BrandsRepository implements IBrandsRepository {
   }
 
   async find(
-    where: IListBrandDTO,
-    { page, pageSize }: IFilterRequestList,
+    { id_conta, id_estabelecimento, id_loja }: IListBrandDTO,
+    { search, page, pageSize }: IFilterRequestList,
   ): Promise<Brand[]> {
+    const searchSplit = search ? search.split(';') : [];
+
+    let where = '';
+
+    if (searchSplit.length === 1) {
+      where = `marca like '%${searchSplit[0]}%'`;
+    }
+
     const brands = await this.ormRepository.find({
-      // where,
+      where: qb => {
+        qb.where(where);
+      },
       skip: page ? page - 1 : 0,
       take: pageSize + 1 || 11,
       relations: ['loja', 'estabelecimento', 'conta'],
+      order: {
+        id: 'DESC',
+      },
     });
 
     return brands;

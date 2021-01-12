@@ -1,6 +1,7 @@
 export default interface ICreatePieceDTO {
   id_conta: number;
   id_estabelecimento: number;
+  peca_destaque?: number;
   id_loja: number;
   id_marca: number;
   id_modelo: number;

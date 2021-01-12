@@ -5,6 +5,7 @@ import establishmentsRouter from '@modules/establishment/infra/http/routes/estab
 import shopsRouter from '@modules/establishment/infra/http/routes/shop.routes';
 import sessionsRouter from '@modules/users/infra/http/routes/sessions.routes';
 import accountsRouter from '@modules/users/infra/http/routes/accounts.routes';
+import perfilRouter from '@modules/users/infra/http/routes/perfil.routes';
 import brandsRouter from '@modules/piece/infra/http/routes/brands.routes';
 import modelsRouter from '@modules/piece/infra/http/routes/models.routes';
 import categoriesRouter from '@modules/piece/infra/http/routes/categories.routes';
@@ -25,5 +26,6 @@ routes.use('/api/categoria', categoriesRouter);
 routes.use('/api/peca', piecesRouter);
 routes.use('/api/orcamento', budgetsRouter);
 routes.use('/api/cotacao', quotationsRouter);
+routes.use('/api/perfil', perfilRouter);
 
 export default routes;

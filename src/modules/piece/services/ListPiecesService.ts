@@ -19,10 +19,16 @@ export default class ListPiecesService {
     user_id: number,
     filter?: IFilterRequestList,
   ): Promise<IResponseList> {
-    const { id_conta } = await this.usersRepository.findById(user_id);
+    const {
+      id_estabelecimento,
+      id_loja,
+      id_conta,
+    } = await this.usersRepository.findById(user_id);
 
     const pieces = await this.piecesRepository.find(
       {
+        id_estabelecimento,
+        id_loja,
         id_conta,
       },
       filter,

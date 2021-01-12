@@ -8,7 +8,7 @@ import IUpdateValueQuotationItemDTO from '../dtos/IUpdateValueQuotationDTO';
 export default interface IQuotationItemsRepository {
   create(data: ICreateQuotationItemDTO[]): Promise<QuotationItem[]>;
   find(
-    quotation_identifier: string,
+    id_cotacao: number,
     data: IListDTO,
     filter: IFilterRequestList,
   ): Promise<QuotationItem[]>;

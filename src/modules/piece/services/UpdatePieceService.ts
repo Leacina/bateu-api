@@ -1,7 +1,10 @@
 import { inject, injectable } from 'tsyringe';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import Piece from '@modules/piece/infra/typeorm/entities/Piece';
+import AppError from '@shared/errors/AppError';
+import * as yup from 'yup';
 import IPiecesRepository from '../repositories/IPiecesRepository';
+import IImagePieceRepository from '../repositories/IImagePieceRepository';
 
 interface IRequest {
   id: number;
@@ -9,6 +12,7 @@ interface IRequest {
   id_modelo?: number;
   id_categoria?: number;
   nm_peca?: string;
+  peca_destaque?: number;
   valor_peca?: number;
   valor_peca_oficina?: number;
   valor_peca_seguradora?: number;
@@ -29,15 +33,48 @@ interface IRequest {
 }
 
 @injectable()
-export default class ListPieceService {
+export default class UpdatePieceService {
   constructor(
     @inject('PiecesRepository') private piecesRepository: IPiecesRepository,
+
+    @inject('ImagePieceRepository')
+    private imagePieceRepository: IImagePieceRepository,
 
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
   ) {}
 
   public async execute(data: IRequest): Promise<Piece> {
+    // Validações necessárias para criar o usuário
+    const schema = yup.object().shape({
+      id_estabelecimento: yup
+        .number()
+        .required('Estabelecimento não informado'),
+      id_loja: yup.number().required('Loja não informada'),
+      id_marca: yup.number().required('Marca não informada'),
+      id_modelo: yup.number().required('Modelo não informado'),
+      id_categoria: yup.number().required('Categoriia não informada'),
+      nm_peca: yup.string().required('Nome da peça não informada'),
+      valor_peca: yup.number().required('Valor da peça não informado'),
+      valor_peca_oficina: yup
+        .number()
+        .required('Valor da peça na oficina não informado'),
+      valor_peca_seguradora: yup
+        .number()
+        .required('Valor da peça na seguradora não informado'),
+      qt_estoque: yup.number().required('Quantidade em estoquee não informado'),
+      ano_inicial: yup.string().required('Ano inicial não informado'),
+      codigo_peca: yup.string().required('Código da peça não informado'),
+      is_promocional: yup.string().default(() => {
+        return 'Não';
+      }),
+    });
+
+    // Caso houver algum erro retorna com status 422
+    await schema.validate(data).catch(err => {
+      throw new AppError(err.message, 422);
+    });
+
     const user = await this.usersRepository.findById(data.user_id);
     const piece = await this.piecesRepository.findByID(data.id, user.id_conta);
 
@@ -57,9 +94,9 @@ export default class ListPieceService {
       piece.largura = data.largura || piece.largura;
       piece.nm_peca = data.nm_peca || piece.nm_peca;
       piece.peso_bruto = data.peso_bruto || piece.peso_bruto;
-      piece.qt_disponivel = data.qt_disponivel || piece.qt_disponivel;
       piece.qt_estoque = data.qt_estoque || piece.qt_estoque;
       piece.valor_peca = data.valor_peca || piece.valor_peca;
+      piece.peca_destaque = data.peca_destaque || piece.peca_destaque;
       piece.valor_peca_oficina =
         data.valor_peca_oficina || piece.valor_peca_oficina;
       piece.valor_peca_seguradora =

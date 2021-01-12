@@ -54,6 +54,9 @@ class CategoriesRepository implements ICategoriesRepository {
       skip: page ? page - 1 : 0,
       take: pageSize + 1 || 11,
       relations: ['conta'],
+      order: {
+        id: 'DESC',
+      },
     });
 
     return categories;

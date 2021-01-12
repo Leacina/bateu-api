@@ -16,10 +16,16 @@ export default class AppointmentController {
   }
 
   public async show(request: Request, response: Response): Promise<Response> {
+    const { page, pageSize, search } = request.query;
     const listEstablishmentService = container.resolve(
       ListEstablishmentService,
     );
-    const establishments = await listEstablishmentService.execute();
+
+    const establishments = await listEstablishmentService.execute({
+      search: search ? String(search) : '',
+      page: Number(page),
+      pageSize: Number(pageSize),
+    });
 
     return response.json(establishments);
   }

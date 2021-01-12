@@ -12,10 +12,7 @@ const quotationItemConfirmController = new QuotationItemConfirmController();
 const quotationItemCancelController = new QuotationItemCancelController();
 
 quotationItemsRouter.use(ensureAuthenticated);
-quotationItemsRouter.get(
-  '/:identificador/itens',
-  quotationItemController.index,
-);
+quotationItemsRouter.get('/:id/itens', quotationItemController.index);
 quotationItemsRouter.put('/itens/:id', quotationItemController.update);
 quotationItemsRouter.put(
   '/itens/confirmar/:id',

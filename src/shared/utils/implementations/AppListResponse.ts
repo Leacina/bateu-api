@@ -8,15 +8,15 @@ class ListResponse {
   public readonly pageSize: number;
 
   constructor(items: any, page: number, pageSize: number) {
-    this.hasNext = items.length > pageSize;
+    this.page = page || 1;
+    this.pageSize = pageSize || 10;
+    this.hasNext = items.length > this.pageSize;
 
     if (items.length > 1 && this.hasNext) {
       items.pop();
     }
 
     this.items = items;
-    this.page = page || 1;
-    this.pageSize = pageSize || 10;
   }
 }
 

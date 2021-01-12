@@ -2,6 +2,8 @@ import { getRepository, Repository } from 'typeorm';
 import IEstablishmentsRepository from '@modules/establishment/repositories/IEstablishmentsRepository';
 import ICreateEstablishmentDTO from '@modules/establishment/dtos/ICreateEstablishmentDto';
 
+import IFilterRequestList from '@shared/utils/dtos/IFilterRequestList';
+import FindFilters from '@shared/utils/implementations/common';
 import Establishment from '../entities/Establishment';
 
 export default class EstablishmentRepository
@@ -20,13 +22,47 @@ export default class EstablishmentRepository
   async findByAccountId(id: number): Promise<Establishment[] | undefined> {
     const establishment = await this.ormRepository.find({
       where: { id_conta: id },
+      order: {
+        id: 'DESC',
+      },
     });
 
     return establishment;
   }
 
-  async find(): Promise<Establishment[] | undefined> {
-    const establishment = await this.ormRepository.find();
+  async find({
+    search,
+    page,
+    pageSize,
+  }: IFilterRequestList): Promise<Establishment[] | undefined> {
+    const searchSplit = search ? search.split(';') : [];
+    const findFilters = new FindFilters(searchSplit);
+
+    let where = '';
+
+    // Se for filtro avançado, procurar por cada campos
+    if (searchSplit.length > 1) {
+      where = `cidade like '%${findFilters.findSearch('cidade')}%' and
+      nm_estabelecimento like '%${findFilters.findSearch(
+        'nm_estabelecimento',
+      )}%' and
+      responsavel like '%${findFilters.findSearch('responsavel')}%'`;
+    } else if (searchSplit.length === 1) {
+      where = `cidade like '%${searchSplit[0]}%' or
+      nm_estabelecimento like '%${searchSplit[0]}%' or
+      responsavel like '%${searchSplit[0]}%'`;
+    }
+
+    const establishment = await this.ormRepository.find({
+      where: qb => {
+        qb.where(where);
+      },
+      skip: page,
+      take: pageSize,
+      order: {
+        id: 'DESC',
+      },
+    });
 
     return establishment;
   }

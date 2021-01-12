@@ -34,7 +34,7 @@ export default class ListBudgetsService {
       filter,
     );
 
-    budgets.map(budget => {
+    budgets.map(async budget => {
       if (budget.situacao === 'P') {
         budget.situacao = 'Pendente';
       } else if (budget.situacao === 'VP') {

@@ -37,10 +37,11 @@ export default class ModelsController {
   }
 
   public async show(request: Request, response: Response): Promise<Response> {
-    const { page, pageSize } = request.query;
+    const { page, pageSize, search } = request.query;
     const listModel = container.resolve(ListModelsService);
 
     const models = await listModel.execute(Number(request.user.id), {
+      search: search ? String(search) : '',
       page: Number(page),
       pageSize: Number(pageSize),
     });

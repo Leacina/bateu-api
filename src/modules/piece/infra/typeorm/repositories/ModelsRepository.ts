@@ -27,7 +27,7 @@ class ModelsRepository implements IModelsRepository {
       modelo,
       dh_inc: new Date(),
     });
-    console.log('suceecsso');
+
     await this.ormRepository.save(brand);
 
     return brand;
@@ -54,14 +54,27 @@ class ModelsRepository implements IModelsRepository {
   }
 
   async find(
-    where: IListDTO,
-    { page, pageSize }: IFilterRequestList,
+    { id_loja, id_estabelecimento, id_conta }: IListDTO,
+    { search, page, pageSize }: IFilterRequestList,
   ): Promise<Model[]> {
+    const searchSplit = search ? search.split(';') : [];
+
+    let where = '';
+
+    if (searchSplit.length === 1) {
+      where = `modelo like '%${searchSplit[0]}%'`;
+    }
+
     const brands = await this.ormRepository.find({
-      // where,
+      where: qb => {
+        qb.where(where);
+      },
       skip: page ? page - 1 : 0,
       take: pageSize + 1 || 11,
       relations: ['marca', 'loja', 'estabelecimento', 'conta'],
+      order: {
+        id: 'DESC',
+      },
     });
 
     return brands;

@@ -15,6 +15,7 @@ const budgetCancelController = new BudgetCancelController();
 
 budgetsRouter.use(ensureAuthenticated);
 budgetsRouter.use('/', budgetItemsRouter);
+budgetsRouter.post('/', budgetsController.create);
 budgetsRouter.get('/', budgetsController.show);
 budgetsRouter.get('/:id', budgetsController.index);
 budgetsRouter.get('/email/:email', budgetByEmailController.index);

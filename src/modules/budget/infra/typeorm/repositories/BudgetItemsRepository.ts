@@ -41,11 +41,13 @@ export default class BudgetItemsRepository implements IBudgetItemsRepository {
     const budgetItems = await this.ormRepository.find({
       where: {
         id_orcamento: budget_id,
-        // id_conta,
       },
       skip: page ? page - 1 : 0,
       take: pageSize + 1 || 11,
       relations: ['orcamento', 'peca', 'conta'],
+      order: {
+        id: 'DESC',
+      },
     });
 
     return budgetItems;

@@ -1,8 +1,9 @@
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, Repository, Like } from 'typeorm';
 import IPiecesRepository from '@modules/piece/repositories/IPiecesRepository';
 import ICreatePieceDTO from '@modules/piece/dtos/ICreatePieceDTO';
 import IListDTO from '@modules/piece/dtos/IListDTO';
 import IFilterRequestList from '@shared/utils/dtos/IFilterRequestList';
+import FindFilters from '@shared/utils/implementations/common';
 import Piece from '../entities/Piece';
 
 class PiecesRepository implements IPiecesRepository {
@@ -36,7 +37,7 @@ class PiecesRepository implements IPiecesRepository {
     const piece = await this.ormRepository.findOne({
       where: {
         id,
-        id_conta,
+        // id_conta,
       },
     });
 
@@ -44,11 +45,21 @@ class PiecesRepository implements IPiecesRepository {
   }
 
   async find(
-    where: IListDTO,
-    { page, pageSize }: IFilterRequestList,
+    { id_conta, id_estabelecimento, id_loja }: IListDTO,
+    { search, page, pageSize }: IFilterRequestList,
   ): Promise<Piece[]> {
+    console.log('teste');
     const pieces = await this.ormRepository.find({
-      where,
+      join: {
+        alias: 'piece',
+      },
+      where: qb => {
+        qb.where(
+          `${this.getWhere(
+            search,
+          )} and piece.id_estabelecimento = ${id_estabelecimento} and piece.id_loja = ${id_loja}`,
+        );
+      },
       skip: page ? page - 1 : 0,
       take: pageSize + 1 || 11,
       relations: [
@@ -59,6 +70,44 @@ class PiecesRepository implements IPiecesRepository {
         'categoria',
         'modelo',
       ],
+      order: {
+        id: 'DESC',
+      },
+    });
+
+    return pieces;
+  }
+
+  async findBySpotlight(
+    { id_conta, id_estabelecimento, id_loja }: IListDTO,
+    { search, page, pageSize }: IFilterRequestList,
+  ): Promise<Piece[]> {
+    console.log('teste');
+
+    const pieces = await this.ormRepository.find({
+      join: {
+        alias: 'piece',
+      },
+      where: qb => {
+        qb.where(
+          `${this.getWhere(
+            search,
+          )} and piece.id_estabelecimento = ${id_estabelecimento} and piece.id_loja = ${id_loja} and piece.peca_destaque = 1`,
+        );
+      },
+      skip: page ? page - 1 : 0,
+      take: pageSize + 1 || 11,
+      relations: [
+        'marca',
+        'loja',
+        'estabelecimento',
+        'conta',
+        'categoria',
+        'modelo',
+      ],
+      order: {
+        id: 'DESC',
+      },
     });
 
     return pieces;
@@ -72,7 +121,6 @@ class PiecesRepository implements IPiecesRepository {
     const pieces = await this.ormRepository.find({
       where: {
         id_categoria: id,
-        id_conta,
       },
       skip: page ? page - 1 : 0,
       take: pageSize + 1 || 11,
@@ -84,9 +132,49 @@ class PiecesRepository implements IPiecesRepository {
         'categoria',
         'modelo',
       ],
+      order: {
+        id: 'DESC',
+      },
     });
 
     return pieces;
+  }
+
+  async count({
+    id_conta,
+    id_estabelecimento,
+    id_loja,
+  }: IListDTO): Promise<number> {
+    const count = await this.ormRepository.count({
+      where: {
+        id_estabelecimento,
+        id_loja,
+      },
+    });
+
+    return count;
+  }
+
+  getWhere(search: string): string {
+    const searchSplit = search ? search.split(';') : [];
+    const findFilters = new FindFilters(searchSplit);
+
+    let where = 'true ';
+
+    // Se for filtro avançado, procurar por cada campos
+    if (searchSplit.length > 1) {
+      where += `and piece.nm_peca like '%${findFilters.findSearch(
+        'nm_peca',
+      )}%' and
+      piece.descricao_peca like '%${findFilters.findSearch(
+        'descricao_peca',
+      )}%'`;
+    } else if (searchSplit.length === 1) {
+      where += `and (piece.nm_peca like '%${searchSplit[0]}%' or
+      piece.descricao_peca like '%${searchSplit[0]}%')`;
+    }
+
+    return where;
   }
 }
 

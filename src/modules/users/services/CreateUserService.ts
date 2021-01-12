@@ -64,7 +64,7 @@ class CreateUserService {
         .required('O campo e-mail é obrigatório'),
       nm_usuario: yup.string().required('O campo nome não foi informado'),
       ds_senha: yup.string().required('O campo senha não foi informado'),
-      id_conta: yup.number().required('O campo conta não foi informado'),
+      // id_conta: yup.number().required('O campo conta não foi informado'),
       id_perfil: yup.number().required('O campo perfil não foi informado'),
       is_ativo: yup.string().default(() => {
         return 'Sim';
@@ -76,10 +76,10 @@ class CreateUserService {
       throw new AppError(err.message, 422);
     });
 
-    // Se não existir a conta
-    const account = await this.accountsRepository.findById(id_conta);
-    if (!account) {
-      throw new AppError('Conta informada inválida');
+    if (tp_usuario) {
+      if (tp_usuario !== 'F' && tp_usuario !== 'S' && tp_usuario !== 'O') {
+        throw new AppError('Tipo de usuário informado inválido');
+      }
     }
 
     // Se não existir estabelecimento

@@ -7,14 +7,14 @@ import UpdateValueItemQuotationService from '@modules/quotation/services/UpdateV
 
 export default class QuotationItemsController {
   public async index(request: Request, response: Response): Promise<Response> {
-    const { identificador } = request.params;
+    const { id } = request.params;
     const { page, pageSize } = request.query;
     const listItemsQuotationByIdentifierService = container.resolve(
       ListItemsQuotationByIdentifierService,
     );
-
+    console.log(id);
     const brands = await listItemsQuotationByIdentifierService.execute(
-      identificador,
+      Number(id),
       Number(request.user.id),
       {
         page: Number(page),

@@ -1,6 +1,6 @@
 export default interface ICreateEstablishmentDto {
   id_conta: number;
-  id_estalecimento: number;
+  id_estabelecimento: number;
   nm_loja: string;
   cnpj_cpf: string;
   estado: string;

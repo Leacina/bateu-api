@@ -15,6 +15,14 @@ import CategoriesRepository from '../infra/typeorm/repositories/CategoriesReposi
 import IPiecesRepository from '../repositories/IPiecesRepository';
 import PiecesRepository from '../infra/typeorm/repositories/PiecesRepository';
 
+import IImagePieceRepository from '../repositories/IImagePieceRepository';
+import ImagePieceRepository from '../infra/typeorm/repositories/ImagePieceRepository';
+
+container.registerSingleton<IImagePieceRepository>(
+  'ImagePieceRepository',
+  ImagePieceRepository,
+);
+
 container.registerSingleton<IBrandsRepository>(
   'BrandsRepository',
   BrandsRepository,

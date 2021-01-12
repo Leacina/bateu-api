@@ -36,7 +36,7 @@ export default class CreateShopService {
     fone_principal,
     fone_skype,
     fone_whats,
-    id_estalecimento,
+    id_estabelecimento,
     imagem_loja,
     nm_loja,
     id_conta,
@@ -55,7 +55,7 @@ export default class CreateShopService {
       fone_principal,
       fone_skype,
       fone_whats,
-      id_estalecimento,
+      id_estabelecimento,
       imagem_loja,
       nm_loja,
       id_conta,
@@ -65,8 +65,10 @@ export default class CreateShopService {
 
     const schema = yup.object().shape({
       nm_loja: yup.string().required('Nome da loja não informado'),
-      id_conta: yup.number().required('Conta não informada'),
-      id_estalecimento: yup.number().required('Estabelecimento não informado'),
+      // id_conta: yup.number().required('Conta não informada'),
+      id_estabelecimento: yup
+        .number()
+        .required('Estabelecimento não informado'),
       cnpj_cpf: yup.string().required('CNPJ/CPF não informado'),
       estado: yup.string().required('Estado não informado').max(2),
     });
@@ -76,7 +78,7 @@ export default class CreateShopService {
       .validate({
         nm_loja,
         id_conta,
-        id_estalecimento,
+        id_estabelecimento,
         cnpj_cpf,
         estado,
       })
@@ -84,13 +86,13 @@ export default class CreateShopService {
         throw new AppError(err.message, 422);
       });
 
-    const account = await this.accountsRepository.findById(id_conta);
-    if (!account) {
-      throw new AppError('Conta informada não encontrada', 422);
-    }
+    // const account = await this.accountsRepository.findById(id_conta);
+    // if (!account) {
+    //  throw new AppError('Conta informada não encontrada', 422);
+    // }
 
     const establishment = await this.establishmentsRepository.findById(
-      id_estalecimento,
+      id_estabelecimento,
     );
     if (!establishment) {
       throw new AppError('Estabelecimento informado não encontrada', 422);

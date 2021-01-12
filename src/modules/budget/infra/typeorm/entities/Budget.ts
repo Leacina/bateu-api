@@ -4,11 +4,13 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 
 import Account from '@modules/users/infra/typeorm/entities/Account';
 import Establishment from '@modules/establishment/infra/typeorm/entities/Establishment';
 import Shop from '@modules/establishment/infra/typeorm/entities/Shop';
+import BudgetItem from './BudgetItem';
 
 @Entity('tb_orcamento')
 class Budget {
@@ -35,6 +37,9 @@ class Budget {
   @ManyToOne(() => Shop)
   @JoinColumn({ name: 'id_loja' })
   loja: Shop;
+
+  @OneToMany(() => BudgetItem, budgetItem => budgetItem.orcamento)
+  items: BudgetItem[];
 
   @Column()
   emitente: string;

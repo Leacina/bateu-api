@@ -3,8 +3,6 @@ import {
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
-  OneToMany,
-  OneToOne,
   JoinColumn,
   ManyToOne,
 } from 'typeorm';
@@ -27,7 +25,7 @@ class Shop {
   @Column()
   id_estabelecimento: number;
 
-  @ManyToOne(() => Account)
+  @ManyToOne(() => Establishment)
   @JoinColumn({ name: 'id_estabelecimento' })
   estabelecimento: Establishment;
 

@@ -8,6 +8,7 @@ import IBrandsRepository from '../repositories/IBrandsRepository';
 import IModelsRepository from '../repositories/IModelsRepository';
 import IPiecesRepository from '../repositories/IPiecesRepository';
 import Piece from '../infra/typeorm/entities/Piece';
+import IImagePieceRepository from '../repositories/IImagePieceRepository';
 
 interface IRequest {
   id_estabelecimento: number;
@@ -19,6 +20,7 @@ interface IRequest {
   valor_peca: number;
   valor_peca_oficina: number;
   valor_peca_seguradora: number;
+  peca_destaque?: number;
   qt_disponivel: number;
   qt_estoque: number;
   ano_inicial: number;
@@ -43,6 +45,9 @@ export default class CreateModelService {
     @inject('ModelsRepository') private modelsRepository: IModelsRepository,
 
     @inject('BrandsRepository') private brandsRepository: IBrandsRepository,
+
+    @inject('ImagePieceRepository')
+    private imagePieceRepository: IImagePieceRepository,
 
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
@@ -72,12 +77,8 @@ export default class CreateModelService {
       valor_peca_seguradora: yup
         .number()
         .required('Valor da peça na seguradora não informado'),
-      qt_disponivel: yup
-        .number()
-        .required('Quantidade disponível não informado'),
       qt_estoque: yup.number().required('Quantidade em estoquee não informado'),
       ano_inicial: yup.string().required('Ano inicial não informado'),
-      codigo_peca: yup.string().required('Código da peça não informado'),
       is_promocional: yup.string().default(() => {
         return 'Não';
       }),
@@ -115,13 +116,6 @@ export default class CreateModelService {
       if (!establishment) {
         throw new AppError('Estabelecimento informado inválido');
       }
-      // Verifica se tem permissão
-      if (establishment.id_conta !== user.id_conta) {
-        throw new AppError(
-          'Você não tem permissão para criar com este estabelecimento',
-          403,
-        );
-      }
     }
 
     // Verifica se a loja esta correto
@@ -131,7 +125,7 @@ export default class CreateModelService {
         throw new AppError('Loja informada inválida');
       }
       // Verifica se tem permissão
-      if (shop.id_conta !== user.id_conta) {
+      if (shop.id_estabelecimento !== user.id_estabelecimento) {
         throw new AppError(
           'Você não tem permissão para criar com esta loja',
           403,
@@ -139,9 +133,29 @@ export default class CreateModelService {
       }
     }
 
+    const countPiece = await this.piecesRepository.count({
+      id_conta: 0,
+      id_estabelecimento: data.id_estabelecimento,
+      id_loja: data.id_loja,
+    });
+
+    // Utilizado para organizar o padLeft do códiigo da peça
+    function padLeft(nr: number, n: number, str: string) {
+      return Array(n - String(nr).length + 1).join(str || '0') + nr;
+    }
+
+    // eslint-disable-next-line no-param-reassign
+    data.codigo_peca = `EC${data.id_estabelecimento}LJ${data.id_loja}${padLeft(
+      countPiece,
+      3,
+      '0',
+    )}`;
+
     const piece = await this.piecesRepository.create({
       id_conta: user.id_conta,
       ...data,
+      qt_disponivel: data.qt_estoque,
+      is_promocional: 'Não',
     });
 
     return piece;

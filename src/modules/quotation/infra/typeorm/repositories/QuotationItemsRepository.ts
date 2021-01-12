@@ -36,18 +36,18 @@ export default class QuotationItemsRepository
   }
 
   async find(
-    quotation_identifier: string,
+    id_cotacao: number,
     { id_loja, id_estabelecimento, id_conta }: IListDTO,
     { page, pageSize }: IFilterRequestList,
   ): Promise<QuotationItem[]> {
     const quotationItems = await this.ormRepository.find({
       where: {
-        identificador_cotacao: quotation_identifier.split('_').join(' '),
-        // id_conta,
+        id_cotacao,
       },
-      skip: page ? page - 1 : 0,
-      take: pageSize + 1 || 11,
       relations: ['cotacao', 'conta'],
+      order: {
+        id: 'DESC',
+      },
     });
 
     return quotationItems;
@@ -73,7 +73,7 @@ export default class QuotationItemsRepository
     // Busca para verificar se todos estão cancelados/confirmados/pendentes
     const quotationItems = await this.ormRepository.find({
       where: {
-        identificador_cotacao: quotationItem.identificador_cotacao,
+        id_cotacao: quotationItem.id_cotacao,
       },
     });
 
@@ -90,7 +90,7 @@ export default class QuotationItemsRepository
     // Busca a cotação para alterar a situação
     const quotation = await this.ormRepositoryQuotation.find({
       where: {
-        identificador_cotacao: quotationItem.identificador_cotacao,
+        id: quotationItem.id_cotacao,
       },
     });
 

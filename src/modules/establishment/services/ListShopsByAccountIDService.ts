@@ -17,7 +17,7 @@ class ListShopByAccountIDService {
   public async execute(id: number): Promise<IResponseList | undefined> {
     const shop = await this.shopsRepository.findByAccountId(id);
 
-    return { hasnext: true, items: shop };
+    return { hasNext: true, items: shop };
   }
 }
 

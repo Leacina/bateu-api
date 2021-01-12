@@ -1,21 +1,28 @@
 import { inject, injectable } from 'tsyringe';
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import AppError from '@shared/errors/AppError';
 import * as yup from 'yup';
+import IPiecesRepository from '@modules/piece/repositories/IPiecesRepository';
 import IBudgetsRepository from '../repositories/IBudgetsRepository';
 import Budget from '../infra/typeorm/entities/Budget';
 import IBudgetItemsRepository from '../repositories/IBudgetItemsRepository';
 import BudgetItems from '../infra/typeorm/entities/BudgetItem';
+import ICreateBudgetItemDTO from '../dtos/ICreateBudgetItemDTO';
 
-interface IRequest {
+interface IRequestItems {
   id_produto: number;
   quantidade_solicitada: number;
   valor_orcamento: number;
 }
 
+interface IRequestBudget {
+  emitente: string;
+  emitente_email: string;
+  emitente_telefone: string;
+}
+
 interface IResponse {
   orcamento: Budget;
-  itens: BudgetItems;
+  itens: BudgetItems[];
 }
 
 @injectable()
@@ -27,30 +34,92 @@ export default class CreateBudgetService {
     @inject('BudgetItemsRepository')
     private budgetItemsRepository: IBudgetItemsRepository,
 
-    @inject('UsersRepository')
-    private usersRepository: IUsersRepository,
+    @inject('PiecesRepository')
+    private piecesRepository: IPiecesRepository,
   ) {}
 
-  public async execute(items: IRequest[]): Promise<IResponse> {
+  public async execute(
+    user_id: number,
+    { emitente, emitente_email, emitente_telefone }: IRequestBudget,
+    items: IRequestItems[],
+  ): Promise<IResponse | undefined> {
     // Validações necessárias para criar o usuário
+    const schemaItems = yup.array().of(
+      yup.object().shape({
+        id_produto: yup.number().required('Existem produtos sem código'),
+        quantidade_solicitada: yup
+          .number()
+          .required('Existem produtos sem quantidade'),
+        valor_orcamento: yup
+          .number()
+          .required('Existe produto sem valor de orçamento'),
+      }),
+    );
+
     const schema = yup.object().shape({
-      id_produto: yup.number().required('Existem produtos não informado'),
-      quantidade_solicitada: yup
-        .number()
-        .required('Existem produto sem quantidade'),
-      valor_orcamento: yup
-        .number()
-        .required('Existe produto sem valor de orçamento'),
+      emitente: yup.string().nullable().required('Emitente não informado'),
     });
 
     // Caso houver algum erro retorna com status 422
-    await schema.validate(items).catch(err => {
+    await schemaItems.validate(items).catch(err => {
       throw new AppError(err.message, 422);
     });
 
+    await schema
+      .validate({ emitente, emitente_email, emitente_telefone })
+      .catch(err => {
+        throw new AppError(err.message, 422);
+      });
+
+    let pieceNotFound: number;
+
+    items.map(async item => {
+      const piece = await this.piecesRepository.findByID(
+        Number(item.id_produto),
+      );
+
+      if (!piece) {
+        pieceNotFound = item.id_produto;
+      }
+    });
+
+    if (pieceNotFound) {
+      throw new AppError(`Peça ${pieceNotFound} não encontrada`, 401);
+    }
+
+    const {
+      id_estabelecimento,
+      id_loja,
+    } = await this.piecesRepository.findByID(Number(items[0].id_produto));
+
+    const budget = await this.budgetsRepository.create({
+      emitente,
+      emitente_telefone,
+      emitente_email,
+      id_estabelecimento,
+      id_loja,
+      situacao: 'P',
+    });
+
+    const budgetItems: ICreateBudgetItemDTO[] = [];
+
+    items.map(async item => {
+      const { id_produto, quantidade_solicitada, valor_orcamento } = item;
+
+      budgetItems.push({
+        id_peca: id_produto,
+        quantidade: quantidade_solicitada,
+        valor: valor_orcamento,
+        id_orcamento: budget.id,
+        situacao: 'Pendente',
+      });
+    });
+
+    const itemsResult = await this.budgetItemsRepository.create(budgetItems);
+
     return {
-      orcamento: new Budget(),
-      itens: new BudgetItems(),
+      orcamento: budget,
+      itens: itemsResult,
     };
   }
 }

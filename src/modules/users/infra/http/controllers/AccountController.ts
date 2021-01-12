@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
-import CreateAccountService from '@modules/users/services/CreateAccountService';
-import ListAccountByIDService from '@modules/users/services/ListAccountByIDService';
+import CreateAccountService from '@modules/users/services/account/CreateAccountService';
+import ListAccountByIDService from '@modules/users/services/account/ListAccountByIDService';
 
 export default class AccountController {
   public async create(request: Request, response: Response): Promise<Response> {

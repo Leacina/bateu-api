@@ -6,6 +6,6 @@
   "password": "pr4frentef0rever",
   "database": "bateuweb",
   "entities": [
-      "./src/modules/**/infra/typeorm/entities/*.ts"
+      "./dist/modules/**/infra/typeorm/entities/*.js"
   ]
 }

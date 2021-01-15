@@ -19,9 +19,6 @@ export default class ListPieceBySpotlightService {
     user_id: number,
     filter?: IFilterRequestList,
   ): Promise<IResponseList> {
-    console.log('sdadas');
-    console.log(user_id);
-    console.log('sdadas');
     const {
       id_estabelecimento,
       id_loja,

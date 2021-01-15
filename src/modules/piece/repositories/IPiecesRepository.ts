@@ -6,6 +6,7 @@ import IListPieceDTO from '../dtos/IListDTO';
 export default interface IBrandRepository {
   create(data: ICreatePieceDTO): Promise<Piece>;
   find(data: IListPieceDTO, filter: IFilterRequestList): Promise<Piece[]>;
+  findByShop(data: IListPieceDTO): Promise<Piece[]>;
   findBySpotlight(
     data: IListPieceDTO,
     filter: IFilterRequestList,

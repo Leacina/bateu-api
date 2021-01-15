@@ -3,6 +3,7 @@ import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import IResponseList from '@shared/utils/dtos/IResponseList';
 import IFilterRequestList from '@shared/utils/dtos/IFilterRequestList';
 import ListResponse from '@shared/utils/implementations/AppListResponse';
+import IShopsRepository from '@modules/establishment/repositories/IShopsRepository';
 import IPiecesRepository from '../repositories/IPiecesRepository';
 
 interface IRequest {
@@ -18,6 +19,9 @@ export default class ListPiecesByShopService {
 
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+
+    @inject('ShopsRepository')
+    private shopsRepository: IShopsRepository,
   ) {}
 
   public async execute({
@@ -26,14 +30,13 @@ export default class ListPiecesByShopService {
     user_id,
   }: IRequest): Promise<IResponseList> {
     const { id_conta } = await this.usersRepository.findById(user_id);
+    const { id_estabelecimento } = await this.shopsRepository.findById(id_loja);
 
-    const pieces = await this.piecesRepository.find(
-      {
-        id_conta,
-        id_loja,
-      },
-      filter,
-    );
+    const pieces = await this.piecesRepository.findByShop({
+      id_conta,
+      id_loja,
+      id_estabelecimento,
+    });
 
     return new ListResponse(pieces, filter.page, filter.pageSize);
   }

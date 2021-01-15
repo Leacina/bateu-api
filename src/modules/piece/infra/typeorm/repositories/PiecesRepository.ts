@@ -1,4 +1,4 @@
-import { getRepository, Repository, Like } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 import IPiecesRepository from '@modules/piece/repositories/IPiecesRepository';
 import ICreatePieceDTO from '@modules/piece/dtos/ICreatePieceDTO';
 import IListDTO from '@modules/piece/dtos/IListDTO';
@@ -37,7 +37,6 @@ class PiecesRepository implements IPiecesRepository {
     const piece = await this.ormRepository.findOne({
       where: {
         id,
-        // id_conta,
       },
     });
 
@@ -48,7 +47,6 @@ class PiecesRepository implements IPiecesRepository {
     { id_conta, id_estabelecimento, id_loja }: IListDTO,
     { search, page, pageSize }: IFilterRequestList,
   ): Promise<Piece[]> {
-    console.log('teste');
     const pieces = await this.ormRepository.find({
       join: {
         alias: 'piece',
@@ -78,11 +76,39 @@ class PiecesRepository implements IPiecesRepository {
     return pieces;
   }
 
+  async findByShop({
+    id_estabelecimento,
+    id_loja,
+  }: IListDTO): Promise<Piece[]> {
+    const pieces = await this.ormRepository.find({
+      where: qb => {
+        qb.where(
+          `id_estabelecimento = ${id_estabelecimento} and id_loja = ${id_loja}`,
+        );
+      },
+      order: {
+        id: 'DESC',
+      },
+    });
+
+    return pieces;
+  }
+
   async findBySpotlight(
     { id_conta, id_estabelecimento, id_loja }: IListDTO,
     { search, page, pageSize }: IFilterRequestList,
   ): Promise<Piece[]> {
-    console.log('teste');
+    const searchSplit = search ? search.split(';') : [];
+    const findFilters = new FindFilters(searchSplit);
+
+    let whereEstablishment = '';
+
+    if (searchSplit.length > 1) {
+      whereEstablishment = ` and piece.id_estabelecimento = ${findFilters.findSearch(
+        'id_estabelecimento',
+      )} and
+      piece.id_loja = ${findFilters.findSearch('id_loja')}`;
+    }
 
     const pieces = await this.ormRepository.find({
       join: {
@@ -90,9 +116,9 @@ class PiecesRepository implements IPiecesRepository {
       },
       where: qb => {
         qb.where(
-          `${this.getWhere(
-            search,
-          )} and piece.id_estabelecimento = ${id_estabelecimento} and piece.id_loja = ${id_loja} and piece.peca_destaque = 1`,
+          `${
+            this.getWhere(search) + whereEstablishment
+          } and piece.peca_destaque = 1`,
         );
       },
       skip: page ? page - 1 : 0,

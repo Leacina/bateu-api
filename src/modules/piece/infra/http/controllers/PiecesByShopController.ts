@@ -7,7 +7,6 @@ export default class PiecesByShopController {
   public async show(request: Request, response: Response): Promise<Response> {
     const { id } = request.params;
     const { page, pageSize } = request.query;
-
     const listPieceByShop = container.resolve(ListPiecesByShopService);
 
     const piece = await listPieceByShop.execute({

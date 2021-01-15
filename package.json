@@ -31,9 +31,7 @@
     "prettier": "^2.1.1",
     "ts-jest": "^26.4.1",
     "ts-node-dev": "^1.0.0-pre.62",
-    "typescript": "^4.0.2"
-  },
-  "devDependencies": {
+    "typescript": "^4.0.2",
     "@babel/cli": "^7.12.10",
     "@babel/core": "^7.12.10",
     "@babel/node": "^7.12.10",

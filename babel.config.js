@@ -1,6 +1,6 @@
 module.exports = {
   presets: [
-    ['@babel/preset-env', { targets: { node: '10.5.0' } }],
+    ['@babel/preset-env', { targets: { node: '12.13.1' } }],
     '@babel/preset-typescript'
   ],
   plugins: [

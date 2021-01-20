@@ -34,10 +34,11 @@ export default class CategoriesController {
   }
 
   public async show(request: Request, response: Response): Promise<Response> {
-    const { page, pageSize } = request.query;
+    const { page, pageSize, ignorePage } = request.query;
     const listCategory = container.resolve(ListCategoriesService);
 
     const categories = await listCategory.execute(Number(request.user.id), {
+      ignorePage: ignorePage === 'true',
       page: Number(page),
       pageSize: Number(pageSize),
     });

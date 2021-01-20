@@ -55,7 +55,7 @@ class ModelsRepository implements IModelsRepository {
 
   async find(
     { id_loja, id_estabelecimento, id_conta }: IListDTO,
-    { search, page, pageSize }: IFilterRequestList,
+    { search, page, pageSize, ignorePage }: IFilterRequestList,
   ): Promise<Model[]> {
     const searchSplit = search ? search.split(';') : [];
 
@@ -69,8 +69,9 @@ class ModelsRepository implements IModelsRepository {
       where: qb => {
         qb.where(where);
       },
-      skip: page ? page - 1 : 0,
-      take: pageSize + 1 || 11,
+      // eslint-disable-next-line no-nested-ternary
+      skip: !ignorePage ? (page ? page - 1 : 0) : 0,
+      take: !ignorePage ? pageSize + 1 || 11 : 0,
       relations: ['marca', 'loja', 'estabelecimento', 'conta'],
       order: {
         id: 'DESC',

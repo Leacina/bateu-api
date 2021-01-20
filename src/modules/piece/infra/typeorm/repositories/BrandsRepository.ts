@@ -55,7 +55,7 @@ class BrandsRepository implements IBrandsRepository {
 
   async find(
     { id_conta, id_estabelecimento, id_loja }: IListBrandDTO,
-    { search, page, pageSize }: IFilterRequestList,
+    { search, page, pageSize, ignorePage }: IFilterRequestList,
   ): Promise<Brand[]> {
     const searchSplit = search ? search.split(';') : [];
 
@@ -69,8 +69,9 @@ class BrandsRepository implements IBrandsRepository {
       where: qb => {
         qb.where(where);
       },
-      skip: page ? page - 1 : 0,
-      take: pageSize + 1 || 11,
+      // eslint-disable-next-line no-nested-ternary
+      skip: !ignorePage ? (page ? page - 1 : 0) : 0,
+      take: !ignorePage ? pageSize + 1 || 11 : 0,
       relations: ['loja', 'estabelecimento', 'conta'],
       order: {
         id: 'DESC',

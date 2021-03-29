@@ -1,7 +1,7 @@
 import { injectable, inject } from 'tsyringe';
 import * as yup from 'yup';
 import AppError from '@shared/errors/AppError';
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import Establishment from '../infra/typeorm/entities/Establishment';
 import IEstablishmentsRepository from '../repositories/IEstablishmentsRepository';
 

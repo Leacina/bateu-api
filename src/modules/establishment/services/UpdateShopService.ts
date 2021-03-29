@@ -95,7 +95,8 @@ export default class UpdateShopService {
     shop.estado = estado;
     shop.numero = numero;
     shop.complemento = complemento;
-    console.log(shop.id_estabelecimento);
+    shop.id_conta = establishment.id_conta;
+
     await this.shopsRepository.save(shop);
 
     return shop;

@@ -48,16 +48,23 @@ class CategoriesRepository implements ICategoriesRepository {
     { page, pageSize, ignorePage }: IFilterRequestList,
   ): Promise<Category[]> {
     const categories = await this.ormRepository.find({
-      where: {
-        // id_conta,
-      },
+      where:
+        !id_conta || Number(id_conta) === 0
+          ? {}
+          : {
+              id_conta,
+            },
       // eslint-disable-next-line no-nested-ternary
       skip: !ignorePage ? (page ? page - 1 : 0) : 0,
       take: !ignorePage ? pageSize + 1 || 11 : 0,
       relations: ['conta'],
-      order: {
-        id: 'DESC',
-      },
+      order: !ignorePage
+        ? {
+            id: 'DESC',
+          }
+        : {
+            categoria: 'ASC',
+          },
     });
 
     return categories;

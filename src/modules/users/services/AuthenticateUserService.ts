@@ -4,7 +4,7 @@ import AppError from '@shared/errors/AppError';
 import { injectable, inject } from 'tsyringe';
 import IShopsRepository from '@modules/establishment/repositories/IShopsRepository';
 import User from '../infra/typeorm/entities/User';
-import IUsersRepository from '../repositories/IUsersRepository';
+import IUsersRepository from '../repositories/IUserRepository';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 
 interface IRequest {
@@ -41,6 +41,14 @@ class AuthenticateUserService {
     //  senha,
     //  user.ds_senha,
     // );
+    // if (
+    //  Number(user.id_estabelecimento) === 0 &&
+    //  Number(user.id_loja) === 0 &&
+    //  user.ds_login !== 'administrador@bateu.com.br' &&
+    //  user.tp_usuario === ''
+    // ) {
+    // throw new AppError('Usuário ou senha inválido.', 401);
+    // }
 
     if (senha !== user.ds_senha) {
       throw new AppError('Usuário ou senha inválido.', 401);

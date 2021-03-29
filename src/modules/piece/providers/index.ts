@@ -18,6 +18,9 @@ import PiecesRepository from '../infra/typeorm/repositories/PiecesRepository';
 import IImagePieceRepository from '../repositories/IImagePieceRepository';
 import ImagePieceRepository from '../infra/typeorm/repositories/ImagePieceRepository';
 
+import ITypesPieceRepository from '../repositories/ITypesPieceRepository';
+import TypesPieceRepository from '../infra/typeorm/repositories/TypesPieceRepository';
+
 container.registerSingleton<IImagePieceRepository>(
   'ImagePieceRepository',
   ImagePieceRepository,
@@ -41,4 +44,9 @@ container.registerSingleton<ICategoriesRepository>(
 container.registerSingleton<IPiecesRepository>(
   'PiecesRepository',
   PiecesRepository,
+);
+
+container.registerSingleton<ITypesPieceRepository>(
+  'TypesPieceRepository',
+  TypesPieceRepository,
 );

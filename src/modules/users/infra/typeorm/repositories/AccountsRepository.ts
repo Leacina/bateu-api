@@ -12,11 +12,13 @@ class AccountsRepository implements IAccountsRepository {
   }
 
   public async create({
+    id,
     is_anuncio,
     nm_conta,
     is_ativo,
   }: ICreateAccountDTO): Promise<Account> {
     const account = this.ormRepository.create({
+      id,
       is_anuncio,
       nm_conta,
       is_ativo,

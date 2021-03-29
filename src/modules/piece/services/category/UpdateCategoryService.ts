@@ -1,5 +1,5 @@
 import { inject, injectable } from 'tsyringe';
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import Category from '@modules/piece/infra/typeorm/entities/Category';
 import ICategoriesRepository from '../../repositories/ICategoriesRepository';
 

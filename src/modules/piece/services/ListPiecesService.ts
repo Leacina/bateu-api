@@ -1,5 +1,5 @@
 import { inject, injectable } from 'tsyringe';
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import IResponseList from '@shared/utils/dtos/IResponseList';
 import IFilterRequestList from '@shared/utils/dtos/IFilterRequestList';
 import ListResponse from '@shared/utils/implementations/AppListResponse';
@@ -34,6 +34,11 @@ export default class ListPiecesService {
       filter,
     );
 
-    return new ListResponse(pieces, filter.page, filter.pageSize);
+    return new ListResponse(
+      pieces,
+      filter.page,
+      filter.pageSize,
+      filter.ignorePage,
+    );
   }
 }

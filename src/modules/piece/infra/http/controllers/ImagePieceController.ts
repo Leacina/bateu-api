@@ -9,7 +9,7 @@ import uploadConfig from '@config/uploadImagePiece';
 export default class ImagePieceController {
   public async create(request: Request, response: Response): Promise<Response> {
     const createPieces = container.resolve(CreateImagePieceService);
-
+    console.log(`Todos os arquivos: ${request.files[0].filename}`);
     const { id } = request.params;
 
     const files = [];

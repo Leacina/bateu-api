@@ -5,15 +5,20 @@ import ListPiecesByCategoryService from '@modules/piece/services/ListPiecesByCat
 
 export default class PiecesByShopController {
   public async show(request: Request, response: Response): Promise<Response> {
-    const { id } = request.params;
-    const { page, pageSize } = request.query;
+    const { id, cidade } = request.params;
+    const { page, pageSize, estabelecimento, loja } = request.query;
 
     const listPieceByCategory = container.resolve(ListPiecesByCategoryService);
 
     const piece = await listPieceByCategory.execute({
       id: Number(id),
+      cidade: cidade || '',
       filter: { page: Number(page), pageSize: Number(pageSize) },
       user_id: Number(request.user.id),
+      data: {
+        id_estabelecimento: Number(estabelecimento),
+        id_loja: Number(loja),
+      },
     });
 
     return response.json(piece);

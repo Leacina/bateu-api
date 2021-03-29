@@ -1,10 +1,12 @@
-import { injectable, inject } from 'tsyringe';
+import { injectable, inject, container } from 'tsyringe';
 import * as yup from 'yup';
 import AppError from '@shared/errors/AppError';
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import User from '@modules/users/infra/typeorm/entities/User';
+import IAccounntsRepository from '@modules/users/repositories/IAccountsRepository';
 import Establishment from '../infra/typeorm/entities/Establishment';
 import IEstablishmentsRepository from '../repositories/IEstablishmentsRepository';
+import CreateDefaultCategoryForEstablishmentService from '../../piece/services/category/CreateDefaultCategoryForEstablishmentService';
 
 export interface IRequest {
   nm_estabelecimento: string;
@@ -34,6 +36,9 @@ export default class CreateEstablishmentService {
 
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+
+    @inject('AccountsRepository')
+    private accountsRepository: IAccounntsRepository,
   ) {}
 
   public async execute(
@@ -97,6 +102,28 @@ export default class CreateEstablishmentService {
       quantidade_lojas,
       telefone_responsavel,
     });
+
+    const account = await this.accountsRepository.create({
+      id: Number(establishment.id),
+      is_anuncio: 'Sim',
+      is_ativo: 'Sim',
+      nm_conta: establishment.nm_estabelecimento,
+    });
+
+    const establishmentUpdate = await this.establishmentsRepository.findById(
+      Number(establishment.id),
+    );
+
+    establishmentUpdate.id_conta = account.id;
+
+    await this.establishmentsRepository.save(establishmentUpdate);
+
+    // Cria todas as categorias defaultr
+    const createDefaultCategory = container.resolve(
+      CreateDefaultCategoryForEstablishmentService,
+    );
+
+    createDefaultCategory.execute(account.id);
 
     const userModel = await this.usersRepository.create({
       ds_login: `administrador@${nm_estabelecimento

@@ -73,8 +73,25 @@ class ModelsRepository implements IModelsRepository {
       skip: !ignorePage ? (page ? page - 1 : 0) : 0,
       take: !ignorePage ? pageSize + 1 || 11 : 0,
       relations: ['marca', 'loja', 'estabelecimento', 'conta'],
+      order: !ignorePage
+        ? {
+            id: 'DESC',
+          }
+        : {
+            modelo: 'ASC',
+          },
+    });
+
+    return brands;
+  }
+
+  async findByBrand(id_marca: number): Promise<Model[]> {
+    const brands = await this.ormRepository.find({
+      where: {
+        id_marca,
+      },
       order: {
-        id: 'DESC',
+        modelo: 'ASC',
       },
     });
 

@@ -1,5 +1,5 @@
 import { inject, injectable } from 'tsyringe';
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import Piece from '@modules/piece/infra/typeorm/entities/Piece';
 import AppError from '@shared/errors/AppError';
 import * as yup from 'yup';
@@ -29,6 +29,9 @@ interface IRequest {
   condicao_peca?: string;
   ano_final?: string;
   descricao_peca?: string;
+  ds_imagem?: string;
+  ds_imagem_dois?: string;
+  ds_imagem_tres?: string;
   user_id: number;
 }
 
@@ -101,6 +104,11 @@ export default class UpdatePieceService {
         data.valor_peca_oficina || piece.valor_peca_oficina;
       piece.valor_peca_seguradora =
         data.valor_peca_seguradora || piece.valor_peca_seguradora;
+      piece.ds_imagem = data.ds_imagem === '' ? null : data.ds_imagem;
+      piece.ds_imagem_dois =
+        data.ds_imagem_dois === '' ? null : data.ds_imagem_dois;
+      piece.ds_imagem_tres =
+        data.ds_imagem_tres === '' ? null : data.ds_imagem_tres;
 
       await this.piecesRepository.save(piece);
     }

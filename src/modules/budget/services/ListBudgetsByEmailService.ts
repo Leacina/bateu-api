@@ -1,10 +1,11 @@
 /* eslint-disable no-param-reassign */
 import { inject, injectable } from 'tsyringe';
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import IResponseList from '@shared/utils/dtos/IResponseList';
 import IFilterRequestList from '@shared/utils/dtos/IFilterRequestList';
 import ListResponse from '@shared/utils/implementations/AppListResponse';
 import IBudgetsRepository from '../repositories/IBudgetsRepository';
+import Budget from '../infra/typeorm/entities/Budget';
 
 @injectable()
 export default class ListBudgetsByEmailService {
@@ -19,7 +20,7 @@ export default class ListBudgetsByEmailService {
     budget_email: string,
     user_id: number,
     filter?: IFilterRequestList,
-  ): Promise<IResponseList> {
+  ): Promise<Budget[]> {
     const {
       id_conta,
       id_estabelecimento,
@@ -50,6 +51,6 @@ export default class ListBudgetsByEmailService {
       return budget;
     });
 
-    return new ListResponse(budgets, filter.page, filter.pageSize);
+    return budgets;
   }
 }

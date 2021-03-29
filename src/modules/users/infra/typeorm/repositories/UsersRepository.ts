@@ -1,5 +1,5 @@
 import { getRepository, Repository } from 'typeorm';
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import IFilterRequestList from '@shared/utils/dtos/IFilterRequestList';
 import FindFilters from '@shared/utils/implementations/common';
 import ICreateUserDTO from '../../../dtos/ICreateUserDTO';

@@ -45,21 +45,32 @@ class PiecesRepository implements IPiecesRepository {
 
   async find(
     { id_conta, id_estabelecimento, id_loja }: IListDTO,
-    { search, page, pageSize }: IFilterRequestList,
+    {
+      search,
+      page,
+      pageSize,
+      ignorePage,
+      ignoreEstablishment,
+    }: IFilterRequestList,
   ): Promise<Piece[]> {
+    const where = `${this.getWhere(search)}`;
+
     const pieces = await this.ormRepository.find({
       join: {
         alias: 'piece',
       },
       where: qb => {
         qb.where(
-          `${this.getWhere(
-            search,
-          )} and piece.id_estabelecimento = ${id_estabelecimento} and piece.id_loja = ${id_loja}`,
+          // eslint-disable-next-line prefer-template
+          where +
+            (ignoreEstablishment
+              ? ' '
+              : ` and piece.id_estabelecimento = ${id_estabelecimento} and piece.id_loja = ${id_loja}`),
         );
       },
-      skip: page ? page - 1 : 0,
-      take: pageSize + 1 || 11,
+      // eslint-disable-next-line no-nested-ternary
+      skip: !ignorePage ? (page ? page - 1 : 0) : 0,
+      take: !ignorePage ? pageSize + 1 || 11 : 0,
       relations: [
         'marca',
         'loja',
@@ -141,15 +152,54 @@ class PiecesRepository implements IPiecesRepository {
 
   async findByCategory(
     id: number,
-    id_conta: number,
-    { page, pageSize }: IFilterRequestList,
+    cidade: string,
+    { id_estabelecimento, id_loja }: IListDTO,
+    { page, pageSize, ignoreEstablishment, ignorePage }: IFilterRequestList,
   ): Promise<Piece[]> {
+    // eslint-disable-next-line no-param-reassign
+    ignorePage = true;
+
+    let where = '';
+    where = `piece.id_categoria = ${id}`;
+
+    // Se for por cidade é uma customização do APP.
+    if (cidade) {
+      where = 'true';
+      if (this.getIdAppCategory(id) !== '') {
+        where += ` and categoria.categoria like '%${this.getIdAppCategory(
+          id,
+        )}%'`;
+      }
+
+      if (cidade.toUpperCase() !== 'TODAS') {
+        where += ` and loja.cidade like '%${cidade}%'`;
+      }
+    }
+
+    // Se possuir filtro por cidade
+    if (id_estabelecimento > 0) {
+      where += ` and piece.id_estabelecimento = ${id_estabelecimento}`;
+    }
+
+    if (id_loja > 0) {
+      where += ` and piece.id_loja = ${id_loja}`;
+    }
+
     const pieces = await this.ormRepository.find({
-      where: {
-        id_categoria: id,
+      join: {
+        alias: 'piece',
+        innerJoin: {
+          estabelecimento: 'piece.estabelecimento',
+          loja: 'piece.loja',
+          categoria: 'piece.categoria',
+        },
       },
-      skip: page ? page - 1 : 0,
-      take: pageSize + 1 || 11,
+      where: qb => {
+        qb.where(where);
+      },
+      // eslint-disable-next-line no-nested-ternary
+      skip: !ignorePage ? (page ? page - 1 : 0) : 0,
+      take: !ignorePage ? pageSize + 1 || 11 : 0,
       relations: [
         'marca',
         'loja',
@@ -201,6 +251,33 @@ class PiecesRepository implements IPiecesRepository {
     }
 
     return where;
+  }
+
+  getIdAppCategory(id: number): string {
+    // DESTAQUE(1, "Promocional"),
+    // DIANTEIRA(2, "Dianteira"),
+    // MEIO(3, "Laterais"),
+    // TRASEIRO(4, "Traseira"),
+    // OUTRA(5, "Outra"),
+    // INTERIOR(6, "Interior"),
+    // SUCATA(7, "Sucata");
+
+    switch (id) {
+      case 2:
+        return 'Frente';
+      case 3:
+        return 'Laterais';
+      case 4:
+        return 'Traseira';
+      case 5:
+        return 'Outra';
+      case 6:
+        return 'Interior';
+      case 7:
+        return 'Sucata';
+      default:
+        return '';
+    }
   }
 }
 

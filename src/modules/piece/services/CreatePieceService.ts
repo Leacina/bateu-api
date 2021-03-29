@@ -1,5 +1,6 @@
+/* eslint-disable no-param-reassign */
 import { inject, injectable } from 'tsyringe';
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import AppError from '@shared/errors/AppError';
 import * as yup from 'yup';
 import IShopsRepository from '@modules/establishment/repositories/IShopsRepository';
@@ -35,6 +36,9 @@ interface IRequest {
   ano_final?: string;
   descricao_peca?: string;
   user_id: number;
+  ds_imagem?: string;
+  ds_imagem_dois?: string;
+  ds_imagem_tres?: string;
 }
 
 @injectable()
@@ -83,6 +87,17 @@ export default class CreateModelService {
         return 'Não';
       }),
     });
+
+    // Validações
+    data.altura = data.altura ? data.altura : 0;
+    data.largura = data.largura ? data.largura : 0;
+    data.peso_bruto = data.peso_bruto ? data.peso_bruto : 0;
+    data.comprimento = data.comprimento ? data.comprimento : 0;
+    data.ds_imagem = data.ds_imagem === '' ? null : data.ds_imagem;
+    data.ds_imagem_dois =
+      data.ds_imagem_dois === '' ? null : data.ds_imagem_dois;
+    data.ds_imagem_tres =
+      data.ds_imagem_tres === '' ? null : data.ds_imagem_tres;
 
     // Caso houver algum erro retorna com status 422
     await schema.validate(data).catch(err => {
@@ -152,7 +167,7 @@ export default class CreateModelService {
     )}`;
 
     const piece = await this.piecesRepository.create({
-      id_conta: user.id_conta,
+      id_conta: user.id_estabelecimento,
       ...data,
       qt_disponivel: data.qt_estoque,
       is_promocional: 'Não',

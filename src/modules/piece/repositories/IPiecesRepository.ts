@@ -13,9 +13,11 @@ export default interface IBrandRepository {
   ): Promise<Piece[]>;
   findByCategory(
     id: number,
-    id_conta: number,
+    cidade: string,
+    { id_conta, id_estabelecimento, id_loja }: IListPieceDTO,
     filter: IFilterRequestList,
   ): Promise<Piece[]>;
+
   findByID(id: number, id_conta?: number): Promise<Piece | undefined>;
   delete(id: number): Promise<void>;
   save(data: Piece): Promise<Piece>;

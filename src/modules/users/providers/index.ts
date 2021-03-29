@@ -3,14 +3,20 @@
  */
 import { container } from 'tsyringe';
 
-import IUsersRepository from '../repositories/IUsersRepository';
+import IUsersRepository from '../repositories/IUserRepository';
 import UsersRepository from '../infra/typeorm/repositories/UsersRepository';
+
 import IAccountsRepository from '../repositories/IAccountsRepository';
 import AccountsRepository from '../infra/typeorm/repositories/AccountsRepository';
+
 import IHashProvider from './HashProvider/models/IHashProvider';
 import BCryptHashProvider from './HashProvider/implementations/BCryptHashProvider';
+
 import IPerfilRepository from '../repositories/IPerfilRepository';
 import PerfilRepository from '../infra/typeorm/repositories/PerfilRepository';
+
+import IUserTokensRepository from '../repositories/IUserTokensRepository';
+import UserTokensRepository from '../infra/typeorm/repositories/UserTokensRepository';
 
 container.registerSingleton<IHashProvider>('HashProvider', BCryptHashProvider);
 
@@ -27,4 +33,9 @@ container.registerSingleton<IAccountsRepository>(
 container.registerSingleton<IPerfilRepository>(
   'PerfilRepository',
   PerfilRepository,
+);
+
+container.registerSingleton<IUserTokensRepository>(
+  'UserTokensRepository',
+  UserTokensRepository,
 );

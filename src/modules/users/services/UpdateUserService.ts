@@ -5,7 +5,7 @@ import AppError from '@shared/errors/AppError';
 
 import IEstablishmentRepository from '@modules/establishment/repositories/IEstablishmentsRepository';
 import IShopRepository from '@modules/establishment/repositories/IShopsRepository';
-import IUsersRepository from '../repositories/IUsersRepository';
+import IUsersRepository from '../repositories/IUserRepository';
 import IAccountsRepository from '../repositories/IAccountsRepository';
 
 import User from '../infra/typeorm/entities/User';

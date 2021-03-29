@@ -23,42 +23,42 @@ class Piece {
 
   @ManyToOne(() => Account)
   @JoinColumn({ name: 'id_conta' })
-  conta: Account;
+  conta: Account | string;
 
   @Column()
   id_estabelecimento: number;
 
   @ManyToOne(() => Establishment)
   @JoinColumn({ name: 'id_estabelecimento' })
-  estabelecimento: Establishment;
+  estabelecimento: Establishment | string;
 
   @Column()
   id_loja: number;
 
   @ManyToOne(() => Shop)
   @JoinColumn({ name: 'id_loja' })
-  loja: Shop;
+  loja: Shop | string;
 
   @Column()
   id_marca: number;
 
   @ManyToOne(() => Brand)
   @JoinColumn({ name: 'id_marca' })
-  marca: Brand;
+  marca: Brand | string;
 
   @Column()
   id_modelo: number;
 
   @ManyToOne(() => Model)
   @JoinColumn({ name: 'id_modelo' })
-  modelo: Model;
+  modelo: Model | string;
 
   @Column()
   id_categoria: number;
 
   @ManyToOne(() => Category)
   @JoinColumn({ name: 'id_categoria' })
-  categoria: Category;
+  categoria: Category | string;
 
   @Column()
   nm_peca: string;

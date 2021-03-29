@@ -98,6 +98,8 @@ export default class CreateShopService {
       throw new AppError('Estabelecimento informado não encontrada', 422);
     }
 
+    data.id_conta = establishment.id_conta;
+
     const shop = await this.shopsRepository.create(data);
 
     return shop;

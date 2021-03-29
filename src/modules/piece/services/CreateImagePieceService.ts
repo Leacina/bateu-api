@@ -21,7 +21,7 @@ class UpdateUserAvatarService {
     const images = await this.imagePieceRepository.findByPieceID(
       Number(piece_id),
     );
-
+    console.log('Salvando imagens...');
     images.map(async image => {
       if (image.imagem) {
         const pieceFilePath = path.join(uploadConfig.directory, image.imagem);

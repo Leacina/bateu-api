@@ -73,9 +73,13 @@ class BrandsRepository implements IBrandsRepository {
       skip: !ignorePage ? (page ? page - 1 : 0) : 0,
       take: !ignorePage ? pageSize + 1 || 11 : 0,
       relations: ['loja', 'estabelecimento', 'conta'],
-      order: {
-        id: 'DESC',
-      },
+      order: !ignorePage
+        ? {
+            id: 'DESC',
+          }
+        : {
+            marca: 'ASC',
+          },
     });
 
     return brands;

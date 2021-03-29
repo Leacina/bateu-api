@@ -1,5 +1,5 @@
 import { inject, injectable } from 'tsyringe';
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import IResponseList from '@shared/utils/dtos/IResponseList';
 import IFilterRequestList from '@shared/utils/dtos/IFilterRequestList';
 import ListResponse from '@shared/utils/implementations/AppListResponse';
@@ -19,10 +19,18 @@ export default class ListCategoryService {
     user_id: number,
     filter?: IFilterRequestList,
   ): Promise<IResponseList> {
-    const { id_conta } = await this.usersRepository.findById(user_id);
+    const { id_estabelecimento } = await this.usersRepository.findById(user_id);
 
-    const brands = await this.categoriesRepository.find(id_conta, filter);
+    const brands = await this.categoriesRepository.find(
+      id_estabelecimento,
+      filter,
+    );
 
-    return new ListResponse(brands, filter.page, filter.pagesize);
+    return new ListResponse(
+      brands,
+      filter.page,
+      filter.pageSize,
+      filter.ignorePage,
+    );
   }
 }

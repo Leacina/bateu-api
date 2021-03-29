@@ -5,7 +5,7 @@ import AppError from '@shared/errors/AppError';
 
 import Account from '../../infra/typeorm/entities/Account';
 import IAccountsRepository from '../../repositories/IAccountsRepository';
-import IUsersRepository from '../../repositories/IUsersRepository';
+import IUsersRepository from '../../repositories/IUserRepository';
 import ICreateAccountDTO from '../../dtos/ICreateAccountDTO';
 import User from '../../infra/typeorm/entities/User';
 

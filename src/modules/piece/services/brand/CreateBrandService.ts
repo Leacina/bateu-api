@@ -1,5 +1,5 @@
 import { inject, injectable } from 'tsyringe';
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import AppError from '@shared/errors/AppError';
 import IShopsRepository from '@modules/establishment/repositories/IShopsRepository';
 import IEstablishmentsRepository from '@modules/establishment/repositories/IEstablishmentsRepository';

@@ -8,12 +8,36 @@ import cors from 'cors';
 import routes from './routes';
 
 import '@shared/infra/typeorm';
-import '@shared/container/index';
+import '@shared/container/providers/index';
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+
+app.use((req, res, next) => {
+  const oldSend = res.send;
+
+  res.send = data => {
+    const { pagination } = req.query;
+
+    res.send = oldSend; // set function back to avoid the 'double-send'
+
+    if (!pagination && req.method === 'GET' && data) {
+      const obj = JSON.parse(data);
+
+      if (obj.items) {
+        return res.send(obj.items);
+      }
+
+      return res.send(obj);
+    }
+
+    return res.send(data);
+  };
+  next();
+});
+
 app.use(routes);
 
 app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
@@ -23,7 +47,7 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
       error: err.message,
     });
   }
-  console.log(err);
+  console.log(`${err}sasa`);
   return response.status(500).json({
     status: 'error',
     message: 'Internal server error',

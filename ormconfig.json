@@ -1,10 +1,10 @@
 {
   "type": "mysql",
-  "host": "localhost",
+  "host": "191.252.182.109",
   "port": 3306,
-  "username": "root",
-  "password": "",
-  "database": "bateu_teste",
+  "username": "bateuweb",
+  "password": "pr4frentef0rever",
+  "database": "bateuweb",
   "entities": [
       "./src/modules/**/infra/typeorm/entities/*.ts"
   ]

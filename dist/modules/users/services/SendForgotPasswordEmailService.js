@@ -53,7 +53,6 @@ let SendForgotPasswordEmailService = (_dec = (0, _tsyringe.injectable)(), _dec2 
 
     const forgotPasswordTemplate = _path.default.resolve(__dirname, '..', 'views', 'forgot_password.hbs');
 
-    console.log(userExists.ds_login);
     await this.mailProvider.sendMail({
       to: {
         name: userExists.nm_usuario,

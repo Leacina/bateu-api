@@ -87,12 +87,10 @@ export default class BudgetsRepository implements IBudgetsRepository {
     const budgets = await this.ormRepository.find({
       where: {
         emitente_email: budget_email,
-        id_estabelecimento,
-        id_loja,
         // id_conta,
       },
-      skip: page ? page - 1 : 0,
-      take: pageSize + 1 || 11,
+      // skip: page ? page - 1 : 0,
+      // take: pageSize + 1 || 11,
       relations: ['loja', 'estabelecimento', 'conta'],
       order: {
         id: 'DESC',

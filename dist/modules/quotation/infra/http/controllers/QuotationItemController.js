@@ -26,7 +26,6 @@ class QuotationItemsController {
 
     const listItemsQuotationByIdentifierService = _tsyringe.container.resolve(_ListItemsQuotationByIdentifierService.default);
 
-    console.log(id);
     const brands = await listItemsQuotationByIdentifierService.execute(Number(id), Number(request.user.id), {
       page: Number(page),
       pageSize: Number(pageSize)

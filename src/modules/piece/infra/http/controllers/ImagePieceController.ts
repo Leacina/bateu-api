@@ -8,8 +8,8 @@ import uploadConfig from '@config/uploadImagePiece';
 
 export default class ImagePieceController {
   public async create(request: Request, response: Response): Promise<Response> {
+    console.log('Entrou no controller');
     const createPieces = container.resolve(CreateImagePieceService);
-    console.log(`Todos os arquivos: ${request.files[0].filename}`);
     const { id } = request.params;
 
     const files = [];
@@ -19,7 +19,7 @@ export default class ImagePieceController {
         files.push(request.files[i].filename);
       }
     }
-
+    console.log(`Imprimindo os arquivos: ${files}`);
     const piece = await createPieces.execute({
       files,
       piece_id: Number(id),

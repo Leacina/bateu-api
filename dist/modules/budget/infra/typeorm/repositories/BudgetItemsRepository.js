@@ -37,6 +37,17 @@ class BudgetItemsRepository {
     return budgetItem;
   }
 
+  async sum(budget_id) {
+    const budgetItems = await this.ormRepository.find({
+      where: {
+        id_orcamento: budget_id
+      }
+    });
+    return budgetItems.reduce((acumulador, current_value) => {
+      return Number(acumulador) + Number(current_value.valor);
+    }, 0);
+  }
+
   async find(budget_id, {
     id_loja,
     id_estabelecimento,

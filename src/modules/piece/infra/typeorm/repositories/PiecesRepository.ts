@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { getRepository, Repository } from 'typeorm';
 import IPiecesRepository from '@modules/piece/repositories/IPiecesRepository';
 import ICreatePieceDTO from '@modules/piece/dtos/ICreatePieceDTO';
@@ -5,6 +6,7 @@ import IListDTO from '@modules/piece/dtos/IListDTO';
 import IFilterRequestList from '@shared/utils/dtos/IFilterRequestList';
 import FindFilters from '@shared/utils/implementations/common';
 import Piece from '../entities/Piece';
+import IFilterPieceDTO from '../../../dtos/IFilterPieceDTO';
 
 class PiecesRepository implements IPiecesRepository {
   private ormRepository: Repository<Piece>;
@@ -13,6 +15,10 @@ class PiecesRepository implements IPiecesRepository {
     this.ormRepository = getRepository(Piece);
   }
 
+  /**
+   * Criação da peça
+   * @param data dados da peã
+   */
   async create(data: ICreatePieceDTO): Promise<Piece> {
     const piece = this.ormRepository.create({
       ...data,
@@ -43,6 +49,12 @@ class PiecesRepository implements IPiecesRepository {
     return piece;
   }
 
+  /**
+   * Usado pelo portal e pelas query de filtro do aplicativo
+   * @param param0 Informações da loja
+   * @param param1 Filtro de paginação
+   * @param filterPiece Filtros da peça
+   */
   async find(
     { id_conta, id_estabelecimento, id_loja }: IListDTO,
     {
@@ -52,12 +64,20 @@ class PiecesRepository implements IPiecesRepository {
       ignorePage,
       ignoreEstablishment,
     }: IFilterRequestList,
+    filterPiece: IFilterPieceDTO,
   ): Promise<Piece[]> {
-    const where = `${this.getWhere(search)}`;
+    const where = `${this.getWhere(search)} and ${this.getWhereFilterApp(
+      filterPiece,
+    )}`;
 
     const pieces = await this.ormRepository.find({
       join: {
         alias: 'piece',
+        leftJoin: {
+          categoria: 'piece.categoria',
+          marca: 'piece.marca',
+          modelo: 'piece.modelo',
+        },
       },
       where: qb => {
         qb.where(
@@ -85,6 +105,74 @@ class PiecesRepository implements IPiecesRepository {
     });
 
     return pieces;
+  }
+
+  /**
+   * Filtro especifico do aplicativo
+   * @param param0
+   * @param param1
+   * @param filterPiece
+   */
+  async findUnion(
+    { id_conta, id_estabelecimento, id_loja }: IListDTO,
+    data: IFilterRequestList,
+    filterPiece: IFilterPieceDTO,
+  ): Promise<Piece[]> {
+    const where1 = `${this.getWhereFilterUnionApp({ ...filterPiece }, false)}`;
+    const where2 = `${this.getWhereFilterUnionApp({ ...filterPiece }, true)}`;
+
+    const pieces = await this.ormRepository.find({
+      join: {
+        alias: 'piece',
+        leftJoin: {
+          categoria: 'piece.categoria',
+          marca: 'piece.marca',
+          modelo: 'piece.modelo',
+        },
+      },
+      where: qb => {
+        qb.where(where1);
+      },
+      relations: [
+        'marca',
+        'loja',
+        'estabelecimento',
+        'conta',
+        'categoria',
+        'modelo',
+      ],
+      order: {
+        id: 'DESC',
+      },
+    });
+
+    // ============
+    const piecesUnion = await this.ormRepository.find({
+      join: {
+        alias: 'piece',
+        leftJoin: {
+          categoria: 'piece.categoria',
+          marca: 'piece.marca',
+          modelo: 'piece.modelo',
+        },
+      },
+      where: qb => {
+        qb.where(where2);
+      },
+      relations: [
+        'marca',
+        'loja',
+        'estabelecimento',
+        'conta',
+        'categoria',
+        'modelo',
+      ],
+      order: {
+        id: 'DESC',
+      },
+    });
+
+    return [...piecesUnion, ...pieces];
   }
 
   async findByShop({
@@ -154,6 +242,7 @@ class PiecesRepository implements IPiecesRepository {
     id: number,
     cidade: string,
     { id_estabelecimento, id_loja }: IListDTO,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     { page, pageSize, ignoreEstablishment, ignorePage }: IFilterRequestList,
   ): Promise<Piece[]> {
     // eslint-disable-next-line no-param-reassign
@@ -184,7 +273,7 @@ class PiecesRepository implements IPiecesRepository {
     if (id_loja > 0) {
       where += ` and piece.id_loja = ${id_loja}`;
     }
-
+    console.log(where);
     const pieces = await this.ormRepository.find({
       join: {
         alias: 'piece',
@@ -215,6 +304,8 @@ class PiecesRepository implements IPiecesRepository {
 
     return pieces;
   }
+
+  async;
 
   async count({
     id_conta,
@@ -253,6 +344,66 @@ class PiecesRepository implements IPiecesRepository {
     return where;
   }
 
+  getWhereFilterApp(filterPiece: IFilterPieceDTO): string {
+    let whereResult = ' true ';
+
+    if (filterPiece.categoria) {
+      whereResult += ` and categoria.categoria = '${filterPiece.categoria}'`;
+    }
+
+    if (filterPiece.descricao) {
+      whereResult += ` and (piece.descricao_peca like '%${filterPiece.descricao}%' or piece.nm_peca like '%${filterPiece.descricao}%') `;
+    }
+
+    if (filterPiece.modelo) {
+      whereResult += ` and modelo.modelo = '${filterPiece.modelo}'`;
+    }
+
+    if (filterPiece.marca) {
+      whereResult += ` and marca.marca = '${filterPiece.marca}'`;
+    }
+
+    if (filterPiece.ano_final) {
+      whereResult += ` and piece.ano_final <= '${filterPiece.ano_final}'`;
+    }
+
+    if (filterPiece.ano_inicial) {
+      whereResult += ` and piece.ano_inicial >= '${filterPiece.ano_inicial}'`;
+    }
+
+    return whereResult;
+  }
+
+  getWhereFilterUnionApp(
+    filterPiece: IFilterPieceDTO,
+    firstUnion: boolean,
+  ): string {
+    const iFilterPiece = filterPiece;
+    let exists =
+      ' and not exists (select 1 ' +
+      '                     from tb_cadastro_peca piece                                                       ' +
+      '                           join tb_cadastro_estabelecimento e on (piece.id_estabelecimento = e.id)     ' +
+      '                           join tb_cadastro_loja l on (piece.id_loja = l.id)                           ' +
+      '                           join tb_cadastro_marca marca on (piece.id_marca = marca.id)                 ' +
+      '                           join tb_cadastro_modelo modelo on (piece.id_modelo = modelo.id)             ' +
+      '                           join tb_cadastro_categoria categoria on (piece.id_categoria = categoria.id) ';
+
+    exists += `where ${this.getWhereFilterApp(iFilterPiece)})`;
+
+    delete iFilterPiece.ano_final;
+    delete iFilterPiece.ano_inicial;
+    delete iFilterPiece.descricao;
+
+    if (!firstUnion) {
+      delete iFilterPiece.modelo;
+    }
+
+    // Chama novamente com somente alguns campos
+    const where = `${this.getWhereFilterApp(iFilterPiece)}${exists}`;
+
+    return where;
+  }
+
   getIdAppCategory(id: number): string {
     // DESTAQUE(1, "Promocional"),
     // DIANTEIRA(2, "Dianteira"),
@@ -264,7 +415,7 @@ class PiecesRepository implements IPiecesRepository {
 
     switch (id) {
       case 2:
-        return 'Frente';
+        return 'Dianteira';
       case 3:
         return 'Laterais';
       case 4:
@@ -275,6 +426,8 @@ class PiecesRepository implements IPiecesRepository {
         return 'Interior';
       case 7:
         return 'Sucata';
+      case 8:
+        return 'Mecânica';
       default:
         return '';
     }

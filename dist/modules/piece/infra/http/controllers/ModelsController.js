@@ -59,13 +59,14 @@ class ModelsController {
       page,
       pageSize,
       search,
-      ignorePage
+      ignorePage,
+      pagination
     } = request.query;
 
     const listModel = _tsyringe.container.resolve(_ListModelsService.default);
 
     const models = await listModel.execute(Number(request.user.id), {
-      ignorePage: ignorePage === 'true',
+      ignorePage: ignorePage === 'true' || pagination !== 'true',
       search: search ? String(search) : '',
       page: Number(page),
       pageSize: Number(pageSize)

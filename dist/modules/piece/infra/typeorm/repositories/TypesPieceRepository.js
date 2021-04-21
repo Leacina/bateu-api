@@ -18,7 +18,11 @@ class TypesPiece {
   }
 
   async find() {
-    const types = await this.ormRepository.find();
+    const types = await this.ormRepository.find({
+      order: {
+        nome: 'DESC'
+      }
+    });
     return types;
   }
 

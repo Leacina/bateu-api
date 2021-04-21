@@ -27,18 +27,29 @@ let ListPiecesService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (t
     this.usersRepository = usersRepository;
   }
 
-  async execute(user_id, filter) {
+  async execute(user_id, union, filterPage, filterPiece) {
     const {
       id_estabelecimento,
       id_loja,
       id_conta
     } = await this.usersRepository.findById(user_id);
-    const pieces = await this.piecesRepository.find({
-      id_estabelecimento,
-      id_loja,
-      id_conta
-    }, filter);
-    return new _AppListResponse.default(pieces, filter.page, filter.pageSize, filter.ignorePage);
+    let pieces;
+
+    if (union) {
+      pieces = await this.piecesRepository.findUnion({
+        id_estabelecimento,
+        id_loja,
+        id_conta
+      }, filterPage, filterPiece);
+    } else {
+      pieces = await this.piecesRepository.find({
+        id_estabelecimento,
+        id_loja,
+        id_conta
+      }, filterPage, filterPiece);
+    }
+
+    return new _AppListResponse.default(pieces, filterPage.page, filterPage.pageSize, filterPage.ignorePage);
   }
 
 }) || _class) || _class) || _class) || _class) || _class);

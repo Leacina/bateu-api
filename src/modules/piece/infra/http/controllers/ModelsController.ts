@@ -37,11 +37,11 @@ export default class ModelsController {
   }
 
   public async show(request: Request, response: Response): Promise<Response> {
-    const { page, pageSize, search, ignorePage } = request.query;
+    const { page, pageSize, search, ignorePage, pagination } = request.query;
     const listModel = container.resolve(ListModelsService);
 
     const models = await listModel.execute(Number(request.user.id), {
-      ignorePage: ignorePage === 'true',
+      ignorePage: ignorePage === 'true' || pagination !== 'true',
       search: search ? String(search) : '',
       page: Number(page),
       pageSize: Number(pageSize),

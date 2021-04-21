@@ -12,7 +12,11 @@ class TypesPiece implements ITypesPieceRepository {
   }
 
   async find(): Promise<TypePiece[]> {
-    const types = await this.ormRepository.find();
+    const types = await this.ormRepository.find({
+      order: {
+        nome: 'DESC',
+      },
+    });
 
     return types;
   }

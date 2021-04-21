@@ -12,4 +12,5 @@ export default interface IBudgetItemsRepository {
     filter: IFilterRequestList,
   ): Promise<BudgetItem[]>;
   process(dataProcess: IProcessBudgetItemsDTO): Promise<BudgetItem>;
+  sum(budget_id: number): Promise<number>;
 }

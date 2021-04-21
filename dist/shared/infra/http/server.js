@@ -55,7 +55,7 @@ app.use((err, request, response, _) => {
     });
   }
 
-  console.log(`${err}sasa`);
+  console.log(`${err}`);
   return response.status(500).json({
     status: 'error',
     message: 'Internal server error'

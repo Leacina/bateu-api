@@ -58,6 +58,8 @@ let Budget = (_dec = (0, _typeorm.Entity)('tb_orcamento'), _dec2 = (0, _typeorm.
     _initializerDefineProperty(this, "situacao", _descriptor12, this);
 
     _initializerDefineProperty(this, "dh_inc", _descriptor13, this);
+
+    this.valor_total = void 0;
   }
 
 }, _temp), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "id", [_dec2, _dec3], {

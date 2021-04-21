@@ -12,7 +12,7 @@ export default class QuotationItemsController {
     const listItemsQuotationByIdentifierService = container.resolve(
       ListItemsQuotationByIdentifierService,
     );
-    console.log(id);
+
     const brands = await listItemsQuotationByIdentifierService.execute(
       Number(id),
       Number(request.user.id),

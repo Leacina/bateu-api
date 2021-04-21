@@ -6,11 +6,15 @@ import IFilterRequestList from '@shared/utils/dtos/IFilterRequestList';
 import ListResponse from '@shared/utils/implementations/AppListResponse';
 import IBudgetsRepository from '../repositories/IBudgetsRepository';
 import Budget from '../infra/typeorm/entities/Budget';
+import IBudgetItemsRepository from '../repositories/IBudgetItemsRepository';
 
 @injectable()
 export default class ListBudgetsByEmailService {
   constructor(
     @inject('BudgetsRepository') private budgetsRepository: IBudgetsRepository,
+
+    @inject('BudgetItemsRepository')
+    private budgetItemsRepository: IBudgetItemsRepository,
 
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
@@ -37,19 +41,23 @@ export default class ListBudgetsByEmailService {
       filter,
     );
 
-    budgets.map(budget => {
-      if (budget.situacao === 'P') {
-        budget.situacao = 'Pendente';
-      } else if (budget.situacao === 'VP') {
-        budget.situacao = 'Venda Parcial';
-      } else if (budget.situacao === 'VI') {
-        budget.situacao = 'Venda Integral';
-      } else if (budget.situacao === 'C') {
-        budget.situacao = 'Cancelado';
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0; i < budgets.length; i++) {
+      if (budgets[i].situacao === 'P') {
+        budgets[i].situacao = 'Pendente';
+      } else if (budgets[i].situacao === 'VP') {
+        budgets[i].situacao = 'Venda Parcial';
+      } else if (budgets[i].situacao === 'VI') {
+        budgets[i].situacao = 'Venda Integral';
+      } else if (budgets[i].situacao === 'C') {
+        budgets[i].situacao = 'Cancelado';
       }
 
-      return budget;
-    });
+      // eslint-disable-next-line no-await-in-loop
+      budgets[i].valor_total = await this.budgetItemsRepository.sum(
+        budgets[i].id,
+      );
+    }
 
     return budgets;
   }

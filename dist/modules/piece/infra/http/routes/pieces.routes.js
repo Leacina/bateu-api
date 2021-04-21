@@ -15,6 +15,8 @@ var _uploadImagePiece = _interopRequireDefault(require("../../../../../config/up
 
 var _PiecesController = _interopRequireDefault(require("../controllers/PiecesController"));
 
+var _PieceUnionFilterController = _interopRequireDefault(require("../controllers/PieceUnionFilterController"));
+
 var _PiecesSpotlightController = _interopRequireDefault(require("../controllers/PiecesSpotlightController"));
 
 var _PiecesByEstablishmentController = _interopRequireDefault(require("../controllers/PiecesByEstablishmentController"));
@@ -38,21 +40,24 @@ const piecesByCategoryController = new _PiecesByCategoryController.default();
 const imagePieceController = new _ImagePieceController.default();
 const piecesSpotlightController = new _PiecesSpotlightController.default();
 const typesPieceController = new _TypesPieceController.default();
+const pieceUnionFilterController = new _PieceUnionFilterController.default();
+piecesRouter.get('/imagem/:filename', imagePieceController.index);
 piecesRouter.use(_ensureAuthenticated.default);
 piecesRouter.post('/:id/imagens', upload.any(), imagePieceController.create);
 piecesRouter.get('/:id/imagens', imagePieceController.show);
-piecesRouter.get('/imagem/:filename', imagePieceController.index);
 piecesRouter.get('/tipos', typesPieceController.index);
 piecesRouter.get('/destaque', piecesSpotlightController.show);
 piecesRouter.put('/destaque/:id/:peca_destaque', piecesSpotlightController.update);
 piecesRouter.post('/', piecesController.create);
 piecesRouter.put('/:id', piecesController.update);
 piecesRouter.get('/', piecesController.show);
+piecesRouter.get('/union', pieceUnionFilterController.show);
 piecesRouter.get('/:id', piecesController.index);
 piecesRouter.delete('/:id', piecesController.delete);
 piecesRouter.get('/estabelecimento/:id', piecesByEstablishmentController.show);
 piecesRouter.get('/estabelecimento/loja/:id', piecesByShopController.show);
 piecesRouter.get('/categoria/:id', piecesByCategoryController.show);
+piecesRouter.get('/categoria/todas/:id/:cidade', piecesByCategoryController.show);
 piecesRouter.get('/categoria/todas/:id/:cidade', piecesByCategoryController.show);
 var _default = piecesRouter;
 exports.default = _default;

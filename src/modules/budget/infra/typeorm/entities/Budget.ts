@@ -55,6 +55,8 @@ class Budget {
 
   @Column('timestamp')
   dh_inc: Date;
+
+  valor_total: number;
 }
 
 export default Budget;

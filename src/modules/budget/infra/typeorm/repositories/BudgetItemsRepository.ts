@@ -33,6 +33,18 @@ export default class BudgetItemsRepository implements IBudgetItemsRepository {
     return budgetItem;
   }
 
+  async sum(budget_id: number): Promise<number> {
+    const budgetItems = await this.ormRepository.find({
+      where: {
+        id_orcamento: budget_id,
+      },
+    });
+
+    return budgetItems.reduce((acumulador, current_value) => {
+      return Number(acumulador) + Number(current_value.valor);
+    }, 0);
+  }
+
   async find(
     budget_id: number,
     { id_loja, id_estabelecimento, id_conta }: IListDTO,

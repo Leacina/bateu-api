@@ -19,9 +19,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 class ImagePieceController {
   async create(request, response) {
+    console.log('Entrou no controller');
+
     const createPieces = _tsyringe.container.resolve(_CreateImagePieceService.default);
 
-    console.log(`Todos os arquivos: ${request.files[0].filename}`);
     const {
       id
     } = request.params;
@@ -34,6 +35,7 @@ class ImagePieceController {
       }
     }
 
+    console.log(`Imprimindo os arquivos: ${files}`);
     const piece = await createPieces.execute({
       files,
       piece_id: Number(id)

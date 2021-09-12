@@ -54,6 +54,7 @@ let UpdateUserAvatarService = (_dec = (0, _tsyringe.injectable)(), _dec2 = funct
     const URL_IMAGE = 'https://bateuweb.com.br/api/peca/imagem/';
     files.map(async file => {
       countFiles += 1;
+      console.log('Cadastrando imagem');
 
       if (countFiles === 1) {
         piece.ds_imagem = URL_IMAGE + file;

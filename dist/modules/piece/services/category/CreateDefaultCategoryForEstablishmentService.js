@@ -28,10 +28,6 @@ let CreateDefaultCategoryForEstablishmentService = (_dec = (0, _tsyringe.injecta
   execute(id_account) {
     // Cria todas as categorias padrões do sistema...
     this.categoriesRepository.create({
-      categoria: 'Meio',
-      id_conta: id_account
-    });
-    this.categoriesRepository.create({
       categoria: 'Sucata',
       id_conta: id_account
     });
@@ -52,7 +48,7 @@ let CreateDefaultCategoryForEstablishmentService = (_dec = (0, _tsyringe.injecta
       id_conta: id_account
     });
     this.categoriesRepository.create({
-      categoria: 'Frente',
+      categoria: 'Dianteira',
       id_conta: id_account
     });
   }

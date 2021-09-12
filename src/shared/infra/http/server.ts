@@ -54,6 +54,25 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
   });
 });
 
-app.listen(process.env.PORT || 3333, () => {
-  console.log('Rodando backend');
+const http = app.listen(process.env.PORT || 3333, () => {
+  console.log('Rodando backend...');
+});
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const io = require('socket.io')(http, {
+  cors: {
+    origin: '*',
+  },
+});
+
+io.on('connection', socket => {
+  socket.on('subscribe', room => {
+    socket.join(room);
+  });
+
+  socket.on('send notify', data => {
+    socket.broadcast.to(data.room).emit('observer notify', {
+      data,
+    });
+  });
 });

@@ -48,6 +48,8 @@ class UpdateUserAvatarService {
     files.map(async file => {
       countFiles += 1;
 
+      console.log('Cadastrando imagem');
+
       if (countFiles === 1) {
         piece.ds_imagem = URL_IMAGE + file;
       }

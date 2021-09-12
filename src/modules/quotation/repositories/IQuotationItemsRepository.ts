@@ -14,4 +14,5 @@ export default interface IQuotationItemsRepository {
   ): Promise<QuotationItem[]>;
   process(dataProcess: IProcessQuotationItemsDTO): Promise<QuotationItem>;
   updateValue(dataValue: IUpdateValueQuotationItemDTO): Promise<QuotationItem>;
+  sum(budget_id: number): Promise<number>;
 }

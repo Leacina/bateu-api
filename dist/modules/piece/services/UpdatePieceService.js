@@ -76,10 +76,11 @@ let UpdatePieceService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (
       piece.id_marca = data.id_marca || piece.id_marca;
       piece.id_modelo = data.id_modelo || piece.id_modelo;
       piece.is_promocional = data.is_promocional || piece.is_promocional;
-      piece.largura = data.largura || piece.largura;
+      piece.largura = data.largura || 0;
+      piece.altura = data.altura || 0;
       piece.nm_peca = data.nm_peca || piece.nm_peca;
-      piece.peso_bruto = data.peso_bruto || piece.peso_bruto;
-      piece.qt_estoque = data.qt_estoque || piece.qt_estoque;
+      piece.peso_bruto = data.peso_bruto || 0;
+      piece.qt_estoque = data.qt_estoque || 0;
       piece.valor_peca = data.valor_peca || piece.valor_peca;
       piece.peca_destaque = data.peca_destaque || piece.peca_destaque;
       piece.valor_peca_oficina = data.valor_peca_oficina || piece.valor_peca_oficina;

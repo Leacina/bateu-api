@@ -66,8 +66,16 @@ class PiecesRepository implements IPiecesRepository {
     }: IFilterRequestList,
     filterPiece: IFilterPieceDTO,
   ): Promise<Piece[]> {
+    let notValidStock = true;
+
+    // O app utiliza esses filtros... Então valida o estoque
+    if (!page && !pageSize && ignorePage && ignoreEstablishment) {
+      notValidStock = false;
+    }
+
     const where = `${this.getWhere(search)} and ${this.getWhereFilterApp(
       filterPiece,
+      notValidStock,
     )}`;
 
     const pieces = await this.ormRepository.find({
@@ -249,11 +257,11 @@ class PiecesRepository implements IPiecesRepository {
     ignorePage = true;
 
     let where = '';
-    where = `piece.id_categoria = ${id}`;
+    where = `piece.id_categoria = ${id} and piece.qt_estoque > 0`;
 
     // Se for por cidade é uma customização do APP.
     if (cidade) {
-      where = 'true';
+      where = 'piece.qt_estoque > 0';
       if (this.getIdAppCategory(id) !== '') {
         where += ` and categoria.categoria like '%${this.getIdAppCategory(
           id,
@@ -273,7 +281,7 @@ class PiecesRepository implements IPiecesRepository {
     if (id_loja > 0) {
       where += ` and piece.id_loja = ${id_loja}`;
     }
-    console.log(where);
+
     const pieces = await this.ormRepository.find({
       join: {
         alias: 'piece',
@@ -344,7 +352,10 @@ class PiecesRepository implements IPiecesRepository {
     return where;
   }
 
-  getWhereFilterApp(filterPiece: IFilterPieceDTO): string {
+  getWhereFilterApp(
+    filterPiece: IFilterPieceDTO,
+    notVerifyStock?: boolean,
+  ): string {
     let whereResult = ' true ';
 
     if (filterPiece.categoria) {
@@ -371,7 +382,9 @@ class PiecesRepository implements IPiecesRepository {
       whereResult += ` and piece.ano_inicial >= '${filterPiece.ano_inicial}'`;
     }
 
-    return whereResult;
+    return `${whereResult} ${
+      notVerifyStock ? ' ' : ' and piece.qt_estoque > 0 '
+    }`;
   }
 
   getWhereFilterUnionApp(

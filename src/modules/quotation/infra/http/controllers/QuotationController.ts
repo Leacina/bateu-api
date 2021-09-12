@@ -12,12 +12,21 @@ export default class QuotationsController {
       emitente_email,
       emitente_telefone,
       identificador_cotacao,
+      cidades,
+      lojas,
     } = request.body;
     const createQuotationService = container.resolve(CreateQuotationService);
 
     const quotations = await createQuotationService.execute(
       Number(request.user.id),
-      { emitente, emitente_email, emitente_telefone, identificador_cotacao },
+      {
+        emitente,
+        emitente_email,
+        emitente_telefone,
+        identificador_cotacao,
+        cidades,
+        lojas,
+      },
       items,
     );
     return response.json(quotations);

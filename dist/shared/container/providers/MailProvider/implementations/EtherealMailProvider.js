@@ -27,8 +27,8 @@ let EtherealMailProvider = (_dec = (0, _tsyringe.injectable)(), _dec2 = function
       port: 465,
       secure: true,
       auth: {
-        user: 'giovaneleacina@gmail.com',
-        pass: 'xadrezgrande123'
+        user: 'equipebateu@gmail.com',
+        pass: 'S3NHAequipebateu'
       }
     }); // nodemailer.createTestAccount().then(account => {
     //   this.client = nodemailer.createTransport({

@@ -72,9 +72,10 @@ let AuthenticateUserService = (_dec = (0, _tsyringe.injectable)(), _dec2 = funct
       name: user.nm_usuario,
       email: user.ds_login,
       is_bateu: user.ds_login === 'administrador@bateu.com.br',
-      account_id: user.id_conta,
-      establishment_id: user.id_estabelecimento,
-      shop_id: user.id_loja,
+      account_id: user.id_conta || '0',
+      cellphone: user.telefone,
+      establishment_id: user.id_estabelecimento || '0',
+      shop_id: user.id_loja || '0',
       shop_name: shop ? shop.nm_loja : ''
     }, secret, {
       expiresIn,

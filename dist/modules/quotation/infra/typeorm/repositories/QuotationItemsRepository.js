@@ -49,7 +49,7 @@ class QuotationItemsRepository {
       where: {
         id_cotacao
       },
-      relations: ['cotacao', 'conta'],
+      relations: ['cotacao', 'cotacao.loja', 'conta'],
       order: {
         id: 'DESC'
       }
@@ -135,6 +135,17 @@ class QuotationItemsRepository {
 
     await this.ormRepository.save(quotationItem);
     return quotationItem;
+  }
+
+  async sum(quotation_id) {
+    const quotationItems = await this.ormRepository.find({
+      where: {
+        id_cotacao: quotation_id
+      }
+    });
+    return quotationItems.reduce((acumulador, current_value) => {
+      return Number(acumulador) + Number(current_value.valor_peca);
+    }, 0);
   }
 
 }

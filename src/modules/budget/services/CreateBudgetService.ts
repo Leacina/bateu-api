@@ -2,11 +2,22 @@ import { inject, injectable } from 'tsyringe';
 import AppError from '@shared/errors/AppError';
 import * as yup from 'yup';
 import IPiecesRepository from '@modules/piece/repositories/IPiecesRepository';
+import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
+import path from 'path';
+import IShopsRepository from '@modules/establishment/repositories/IShopsRepository';
+import INotificationsRepository from '@modules/users/repositories/INotificationsRepository';
+import ioClient from 'socket.io-client';
+import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import IBudgetsRepository from '../repositories/IBudgetsRepository';
 import Budget from '../infra/typeorm/entities/Budget';
 import IBudgetItemsRepository from '../repositories/IBudgetItemsRepository';
 import BudgetItems from '../infra/typeorm/entities/BudgetItem';
 import ICreateBudgetItemDTO from '../dtos/ICreateBudgetItemDTO';
+
+const ioClientConnect = ioClient('https://bateuweb.com.br/', {
+  transports: ['websocket'],
+  upgrade: false,
+});
 
 interface IRequestItems {
   id_produto: number;
@@ -36,6 +47,18 @@ export default class CreateBudgetService {
 
     @inject('PiecesRepository')
     private piecesRepository: IPiecesRepository,
+
+    @inject('MailProvider')
+    private mailProvider: IMailProvider,
+
+    @inject('ShopsRepository')
+    private shopsRepository: IShopsRepository,
+
+    @inject('NotificationsRepository')
+    private notificationsRepository: INotificationsRepository,
+
+    @inject('UsersRepository')
+    private usersRepository: IUsersRepository,
   ) {}
 
   public async execute(
@@ -70,6 +93,14 @@ export default class CreateBudgetService {
       .catch(err => {
         throw new AppError(err.message, 422);
       });
+
+    const user = await this.usersRepository.findById(user_id);
+
+    if (user) {
+      if (user.ds_login === 'administrador@bateu.com.br') {
+        throw new AppError('Realize o login para criar o orçamento!', 401);
+      }
+    }
 
     let pieceNotFound: number;
 
@@ -116,6 +147,45 @@ export default class CreateBudgetService {
     });
 
     const itemsResult = await this.budgetItemsRepository.create(budgetItems);
+
+    const shop = await this.shopsRepository.findById(id_loja);
+
+    const notification = await this.notificationsRepository.create({
+      id_orcamento: budget.id,
+      id_loja,
+      mensagem: `Novo orçamento criado por ${emitente}`,
+    });
+
+    ioClientConnect.emit('send notify', {
+      room: `id_loja${shop.id}`,
+      data: notification,
+    });
+
+    const createBudgetTemplate = path.resolve(
+      __dirname,
+      '..',
+      'views',
+      'budget_create.hbs',
+    );
+
+    this.mailProvider
+      .sendMail({
+        to: {
+          name: shop.nm_loja,
+          email: shop.email,
+        },
+        subject: '[BATEU] Solicitação de orçamento',
+        templateData: {
+          file: createBudgetTemplate,
+          variable: {
+            title: 'Nova solicitação de orçamento',
+            text_info: `Você tem uma novo orçamento disponível solicitado por ${emitente}. Para mais informação, acesse o portal com um usuário da loja.`,
+          },
+        },
+      })
+      .catch(error => {
+        console.log(error);
+      });
 
     return {
       orcamento: budget,

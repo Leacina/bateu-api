@@ -3,12 +3,12 @@ import { Request, Response } from 'express';
 import fs from 'fs';
 import CreateImagePieceService from '@modules/piece/services/CreateImagePieceService';
 import ListImagePieceService from '@modules/piece/services/ListImagePieceService';
+import sharp from 'sharp';
 
 import uploadConfig from '@config/uploadImagePiece';
 
 export default class ImagePieceController {
   public async create(request: Request, response: Response): Promise<Response> {
-    console.log('Entrou no controller');
     const createPieces = container.resolve(CreateImagePieceService);
     const { id } = request.params;
 
@@ -19,7 +19,7 @@ export default class ImagePieceController {
         files.push(request.files[i].filename);
       }
     }
-    console.log(`Imprimindo os arquivos: ${files}`);
+
     const piece = await createPieces.execute({
       files,
       piece_id: Number(id),

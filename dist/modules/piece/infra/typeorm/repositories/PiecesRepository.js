@@ -70,7 +70,13 @@ class PiecesRepository {
     ignorePage,
     ignoreEstablishment
   }, filterPiece) {
-    const where = `${this.getWhere(search)} and ${this.getWhereFilterApp(filterPiece)}`;
+    let notValidStock = true; // O app utiliza esses filtros... Então valida o estoque
+
+    if (!page && !pageSize && ignorePage && ignoreEstablishment) {
+      notValidStock = false;
+    }
+
+    const where = `${this.getWhere(search)} and ${this.getWhereFilterApp(filterPiece, notValidStock)}`;
     const pieces = await this.ormRepository.find({
       join: {
         alias: 'piece',
@@ -212,10 +218,10 @@ class PiecesRepository {
     // eslint-disable-next-line no-param-reassign
     ignorePage = true;
     let where = '';
-    where = `piece.id_categoria = ${id}`; // Se for por cidade é uma customização do APP.
+    where = `piece.id_categoria = ${id} and piece.qt_estoque > 0`; // Se for por cidade é uma customização do APP.
 
     if (cidade) {
-      where = 'true';
+      where = 'piece.qt_estoque > 0';
 
       if (this.getIdAppCategory(id) !== '') {
         where += ` and categoria.categoria like '%${this.getIdAppCategory(id)}%'`;
@@ -235,7 +241,6 @@ class PiecesRepository {
       where += ` and piece.id_loja = ${id_loja}`;
     }
 
-    console.log(where);
     const pieces = await this.ormRepository.find({
       join: {
         alias: 'piece',
@@ -289,7 +294,7 @@ class PiecesRepository {
     return where;
   }
 
-  getWhereFilterApp(filterPiece) {
+  getWhereFilterApp(filterPiece, notVerifyStock) {
     let whereResult = ' true ';
 
     if (filterPiece.categoria) {
@@ -316,7 +321,7 @@ class PiecesRepository {
       whereResult += ` and piece.ano_inicial >= '${filterPiece.ano_inicial}'`;
     }
 
-    return whereResult;
+    return `${whereResult} ${notVerifyStock ? ' ' : ' and piece.qt_estoque > 0 '}`;
   }
 
   getWhereFilterUnionApp(filterPiece, firstUnion) {

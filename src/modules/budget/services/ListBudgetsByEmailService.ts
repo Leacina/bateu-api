@@ -1,9 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { inject, injectable } from 'tsyringe';
 import IUsersRepository from '@modules/users/repositories/IUserRepository';
-import IResponseList from '@shared/utils/dtos/IResponseList';
 import IFilterRequestList from '@shared/utils/dtos/IFilterRequestList';
-import ListResponse from '@shared/utils/implementations/AppListResponse';
 import IBudgetsRepository from '../repositories/IBudgetsRepository';
 import Budget from '../infra/typeorm/entities/Budget';
 import IBudgetItemsRepository from '../repositories/IBudgetItemsRepository';

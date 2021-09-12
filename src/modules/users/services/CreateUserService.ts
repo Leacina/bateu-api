@@ -65,7 +65,6 @@ class CreateUserService {
       nm_usuario: yup.string().required('O campo nome não foi informado'),
       ds_senha: yup.string().required('O campo senha não foi informado'),
       // id_conta: yup.number().required('O campo conta não foi informado'),
-      id_perfil: yup.number().required('O campo perfil não foi informado'),
       is_ativo: yup.string().default(() => {
         return 'Sim';
       }),
@@ -86,20 +85,25 @@ class CreateUserService {
     const establishment = await this.establishmentsRepository.findById(
       id_estabelecimento || 0,
     );
-    if (!establishment) {
+    if (!establishment && id_estabelecimento) {
       throw new AppError('Estabelecimento informado inválido');
     }
 
     // Se não existe loja
     const shop = await this.shopsRepository.findById(id_loja || 0);
-    if (!shop) {
+    if (!shop && id_loja) {
       throw new AppError('Loja informada inválida');
     }
 
-    data.id_conta = establishment.id_conta;
+    if (establishment) {
+      data.id_conta = establishment.id_conta;
+    }
 
     // Cria o usuario
-    const user = await this.usersRepository.create(data);
+    const user = await this.usersRepository.create({
+      ...data,
+      id_perfil: id_perfil || 0,
+    });
 
     return user;
   }

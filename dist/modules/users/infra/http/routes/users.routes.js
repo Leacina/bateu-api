@@ -17,6 +17,8 @@ var _UserActivateController = _interopRequireDefault(require("../controllers/Use
 
 var _UserDisableController = _interopRequireDefault(require("../controllers/UserDisableController"));
 
+var _UserLegalInfoController = _interopRequireDefault(require("../controllers/UserLegalInfoController"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const usersRouter = (0, _express.Router)();
@@ -24,9 +26,11 @@ const userController = new _UserController.default();
 const userClientController = new _UserClientController.default();
 const userActivateController = new _UserActivateController.default();
 const userDisableController = new _UserDisableController.default();
+const userLegalInfoController = new _UserLegalInfoController.default();
 usersRouter.use(_ensureAuthenticated.default);
 usersRouter.post('/', userController.create);
 usersRouter.put('/:id', userController.update);
+usersRouter.post('/info', userLegalInfoController.create);
 usersRouter.get('/todos/:id', userController.index);
 usersRouter.get('/logista', userController.show);
 usersRouter.get('/cliente', userClientController.show);

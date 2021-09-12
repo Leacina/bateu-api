@@ -20,7 +20,9 @@ class QuotationsController {
       emitente,
       emitente_email,
       emitente_telefone,
-      identificador_cotacao
+      identificador_cotacao,
+      cidades,
+      lojas
     } = request.body;
 
     const createQuotationService = _tsyringe.container.resolve(_CreateQuotationService.default);
@@ -29,7 +31,9 @@ class QuotationsController {
       emitente,
       emitente_email,
       emitente_telefone,
-      identificador_cotacao
+      identificador_cotacao,
+      cidades,
+      lojas
     }, items);
     return response.json(quotations);
   }

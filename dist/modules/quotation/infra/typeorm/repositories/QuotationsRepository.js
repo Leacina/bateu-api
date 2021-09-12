@@ -21,7 +21,8 @@ class QuotationItemsRepository {
 
   async create(data) {
     const quotation = this.ormRepository.create({ ...data,
-      dh_inc: new Date()
+      dh_inc: new Date(),
+      is_visualizado_cliente: 1
     });
     await this.ormRepository.save(quotation);
     return quotation;
@@ -66,6 +67,76 @@ class QuotationItemsRepository {
       }
     });
     return quotations;
+  }
+
+  async findByEmail(budget_email, {
+    id_loja,
+    id_estabelecimento,
+    id_conta
+  }, {
+    page,
+    pageSize,
+    search
+  }, isViewAll) {
+    const searchSplit = search ? search.split(';') : [];
+    const findFilters = new _common.default(searchSplit);
+    let where = 'true '; // Se for filtro avançado, procurar por cada campos
+
+    if (searchSplit.length > 1) {
+      where += `and quotation.identificador_cotacao like '%${findFilters.findSearch('identificador_cotacao')}%' and loja.nm_loja like '%${findFilters.findSearch('nm_loja')}%'`;
+    } else if (searchSplit.length === 1) {
+      where += `and (quotation.emitente like '%${searchSplit[0]}% or loja.nm_loja like '%${searchSplit[0]}%)'`;
+    }
+
+    where += ` and quotation.emitente_email = '${budget_email}'`;
+
+    if (isViewAll === 1) {
+      where += ` and quotation.is_visualizado_cliente = 1`;
+    }
+
+    const quotations = await this.ormRepository.find({
+      join: {
+        alias: 'quotation',
+        leftJoin: {
+          loja: 'quotation.loja'
+        }
+      },
+      where: qb => {
+        qb.where(where);
+      },
+      skip: page ? page - 1 : 0,
+      take: pageSize + 1 || 11,
+      relations: ['loja', 'estabelecimento', 'conta', 'items'],
+      order: {
+        id: 'DESC'
+      }
+    });
+    return quotations;
+  }
+
+  async findById(id) {
+    const quotation = await this.ormRepository.findOne({
+      where: {
+        id
+      },
+      relations: ['loja']
+    });
+    return quotation;
+  }
+
+  async processView(id, isView) {
+    const quotation = await this.ormRepository.findOne({
+      where: {
+        id
+      }
+    }); // eslint-disable-next-line no-unused-expressions
+
+    quotation; // Altera estado da cotação
+
+    quotation.is_visualizado_cliente = isView; // Save
+
+    await this.ormRepository.save(quotation);
+    return quotation;
   }
 
 }

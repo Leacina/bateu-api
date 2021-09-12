@@ -56,8 +56,13 @@ class Quotation {
   @Column()
   identificador_cotacao: string;
 
+  @Column()
+  is_visualizado_cliente: number;
+
   @Column('timestamp')
   dh_inc: Date;
+
+  valor_total: number;
 }
 
 export default Quotation;

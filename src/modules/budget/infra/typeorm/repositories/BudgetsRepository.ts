@@ -132,8 +132,8 @@ export default class BudgetsRepository implements IBudgetsRepository {
     const budgets = await this.ormRepository.findOne({
       where: {
         id,
-        id_estabelecimento,
-        id_loja,
+        // id_estabelecimento,
+        // id_loja,
         // id_conta,
       },
       relations: ['loja', 'estabelecimento', 'conta', 'items'],

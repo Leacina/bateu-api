@@ -70,7 +70,7 @@ class UsersRepository implements IUsersRepository {
     { page, pageSize, search }: IFilterRequestList,
   ): Promise<User[] | undefined> {
     this.searchSplit = search ? search.split(';') : [];
-
+    this.getWhere(logist);
     const user = await this.ormRepository.find({
       join: this.getJoin(logist),
       where: qb => {
@@ -136,7 +136,7 @@ class UsersRepository implements IUsersRepository {
       where = `nm_usuario like '%${this.searchSplit[0]}%' or ds_login like '%${this.searchSplit[0]}%'`;
     }
 
-    return `${where} and (user.id_estabelecimento = null or user.id_estabelecimento = 0)`;
+    return `${where} and (user.id_estabelecimento is null or user.id_estabelecimento = 0 or user.id_estabelecimento = '')`;
   }
 
   getJoin(logist: boolean): any {

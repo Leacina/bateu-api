@@ -33,6 +33,8 @@ var _quotation = _interopRequireDefault(require("../../../../modules/quotation/i
 
 var _password = _interopRequireDefault(require("../../../../modules/users/infra/http/routes/password.routes"));
 
+var _notifications = _interopRequireDefault(require("../../../../modules/users/infra/http/routes/notifications.routes"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // src/routes/index.ts
@@ -50,5 +52,6 @@ routes.use('/api/orcamento', _budget.default);
 routes.use('/api/cotacao', _quotation.default);
 routes.use('/api/perfil', _perfil.default);
 routes.use('/api/password', _password.default);
+routes.use('/api/notificacao', _notifications.default);
 var _default = routes;
 exports.default = _default;

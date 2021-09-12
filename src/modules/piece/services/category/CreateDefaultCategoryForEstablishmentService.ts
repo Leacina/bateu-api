@@ -14,12 +14,6 @@ export default class CreateDefaultCategoryForEstablishmentService {
 
   public execute(id_account: number): void {
     // Cria todas as categorias padrões do sistema...
-
-    this.categoriesRepository.create({
-      categoria: 'Meio',
-      id_conta: id_account,
-    });
-
     this.categoriesRepository.create({
       categoria: 'Sucata',
       id_conta: id_account,
@@ -46,7 +40,7 @@ export default class CreateDefaultCategoryForEstablishmentService {
     });
 
     this.categoriesRepository.create({
-      categoria: 'Frente',
+      categoria: 'Dianteira',
       id_conta: id_account,
     });
   }

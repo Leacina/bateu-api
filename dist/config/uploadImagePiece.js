@@ -21,6 +21,9 @@ var _default = {
     destination: tmpFolder,
 
     filename(request, file, callback) {
+      console.log(file);
+      console.log(request);
+
       const fileHash = _crypto.default.randomBytes(10).toString('HEX');
 
       const fileName = `b4t3u${fileHash}-${file.originalname}`;

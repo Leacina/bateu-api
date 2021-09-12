@@ -18,8 +18,8 @@ export default class EtherealMailProvider implements IMailProvider {
       port: 465,
       secure: true,
       auth: {
-        user: 'giovaneleacina@gmail.com',
-        pass: 'xadrezgrande123',
+        user: 'equipebateu@gmail.com',
+        pass: 'S3NHAequipebateu',
       },
     });
 

@@ -27,7 +27,7 @@ export default class QuotationItemsController {
 
   public async update(request: Request, response: Response): Promise<Response> {
     const { id } = request.params;
-    const { valor_peca } = request.body;
+    const { valor_peca, condicao, observacao } = request.body;
 
     const updateValueItemQuotationService = container.resolve(
       UpdateValueItemQuotationService,
@@ -36,6 +36,8 @@ export default class QuotationItemsController {
     const quotations = await updateValueItemQuotationService.execute({
       id: Number(id),
       value: valor_peca,
+      condition: condicao,
+      observation: observacao,
     });
     return response.json(quotations);
   }

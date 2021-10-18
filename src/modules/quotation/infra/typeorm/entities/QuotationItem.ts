@@ -43,6 +43,12 @@ class QuotationItem {
   @Column()
   situacao: string;
 
+  @Column()
+  condicao_peca: string;
+
+  @Column()
+  observacao: string;
+
   @Column('timestamp')
   dh_inc: Date;
 }

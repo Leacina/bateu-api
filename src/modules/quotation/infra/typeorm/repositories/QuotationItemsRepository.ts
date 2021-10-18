@@ -127,6 +127,8 @@ export default class QuotationItemsRepository
   async updateValue({
     id,
     value,
+    condition,
+    observation,
   }: IUpdateValueQuotationItemDTO): Promise<QuotationItem> {
     const quotationItem = await this.ormRepository.findOne({
       where: {
@@ -140,6 +142,8 @@ export default class QuotationItemsRepository
 
     // Altera estado produto
     quotationItem.valor_peca = value;
+    quotationItem.condicao_peca = condition;
+    quotationItem.observacao = observation;
 
     // Save
     await this.ormRepository.save(quotationItem);

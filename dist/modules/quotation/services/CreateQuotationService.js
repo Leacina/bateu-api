@@ -141,7 +141,9 @@ _dec = (0, _tsyringe.injectable)(), _dec2 = function (target, key) {
         items.map(async item => {
           const {
             descricao_peca,
-            quantidade_solicitada
+            quantidade_solicitada,
+            condicao_peca,
+            observacao
           } = item;
           quotationItems.push({
             descricao_peca,
@@ -149,7 +151,9 @@ _dec = (0, _tsyringe.injectable)(), _dec2 = function (target, key) {
             identificador_cotacao,
             id_cotacao: Number(quotation.id),
             situacao: 'Pendente',
-            dh_inc: new Date()
+            dh_inc: new Date(),
+            condicao_peca,
+            observacao
           });
         }); // eslint-disable-next-line no-await-in-loop
 

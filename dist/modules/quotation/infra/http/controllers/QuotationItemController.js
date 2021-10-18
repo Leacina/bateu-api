@@ -38,14 +38,18 @@ class QuotationItemsController {
       id
     } = request.params;
     const {
-      valor_peca
+      valor_peca,
+      condicao,
+      observacao
     } = request.body;
 
     const updateValueItemQuotationService = _tsyringe.container.resolve(_UpdateValueItemQuotationService.default);
 
     const quotations = await updateValueItemQuotationService.execute({
       id: Number(id),
-      value: valor_peca
+      value: valor_peca,
+      condition: condicao,
+      observation: observacao
     });
     return response.json(quotations);
   }

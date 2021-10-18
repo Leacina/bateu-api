@@ -5,6 +5,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import 'express-async-errors';
 import AppError from '@shared/errors/AppError';
 import cors from 'cors';
+// import webpush from 'web-push';
 import routes from './routes';
 
 import '@shared/infra/typeorm';
@@ -14,6 +15,24 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+
+// const PUBLIC_VAPID =
+//   'BI7Y-hWEdlwRD3fl6nnwQ3mqgT9T5DlL-ZYORK02sqb4F3Y56OrNA_DNqFoS4a79Fgkk0X2988fDmU8MVvT09Mc';
+// const PRIVATE_VAPID = 'KD80Krf-VDw8DbX1iF7YixowDbNNSft6JCutcAs9tpk';
+
+// webpush.setVapidDetails('mailto:val@.io', PUBLIC_VAPID, PRIVATE_VAPID);
+
+// app.get('/subscribe', (req, res) => {
+//   const subscription = req.body;
+//   res.status(201).json({});
+//   const payload = JSON.stringify({ title: 'test' });
+
+//   console.log(subscription);
+
+//   webpush.sendNotification(subscription, payload).catch(error => {
+//     console.error(error.stack);
+//   });
+// });
 
 app.use((req, res, next) => {
   const oldSend = res.send;
@@ -55,7 +74,7 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
 });
 
 const http = app.listen(process.env.PORT || 3333, () => {
-  console.log('Rodando backend...');
+  console.log(`Rodando backend...${process.env.PORT}` || 3333);
 });
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires

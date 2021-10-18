@@ -120,7 +120,9 @@ class QuotationItemsRepository {
 
   async updateValue({
     id,
-    value
+    value,
+    condition,
+    observation
   }) {
     const quotationItem = await this.ormRepository.findOne({
       where: {
@@ -131,7 +133,9 @@ class QuotationItemsRepository {
 
     quotationItem; // Altera estado produto
 
-    quotationItem.valor_peca = value; // Save
+    quotationItem.valor_peca = value;
+    quotationItem.condicao_peca = condition;
+    quotationItem.observacao = observation; // Save
 
     await this.ormRepository.save(quotationItem);
     return quotationItem;

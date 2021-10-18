@@ -11,7 +11,7 @@ var _Account = _interopRequireDefault(require("../../../../users/infra/typeorm/e
 
 var _Quotation = _interopRequireDefault(require("./Quotation"));
 
-var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _dec12, _dec13, _dec14, _dec15, _dec16, _dec17, _dec18, _dec19, _dec20, _dec21, _dec22, _dec23, _dec24, _dec25, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _temp;
+var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _dec12, _dec13, _dec14, _dec15, _dec16, _dec17, _dec18, _dec19, _dec20, _dec21, _dec22, _dec23, _dec24, _dec25, _dec26, _dec27, _dec28, _dec29, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _temp;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25,7 +25,7 @@ let QuotationItem = (_dec = (0, _typeorm.Entity)('tb_cotacao_item'), _dec2 = (0,
   name: 'id_conta'
 }), _dec8 = Reflect.metadata("design:type", typeof _Account.default === "undefined" ? Object : _Account.default), _dec9 = (0, _typeorm.Column)(), _dec10 = Reflect.metadata("design:type", Number), _dec11 = (0, _typeorm.ManyToOne)(() => _Quotation.default), _dec12 = (0, _typeorm.JoinColumn)({
   name: 'id_cotacao'
-}), _dec13 = Reflect.metadata("design:type", typeof _Quotation.default === "undefined" ? Object : _Quotation.default), _dec14 = (0, _typeorm.Column)(), _dec15 = Reflect.metadata("design:type", Number), _dec16 = (0, _typeorm.Column)(), _dec17 = Reflect.metadata("design:type", Number), _dec18 = (0, _typeorm.Column)(), _dec19 = Reflect.metadata("design:type", String), _dec20 = (0, _typeorm.Column)(), _dec21 = Reflect.metadata("design:type", String), _dec22 = (0, _typeorm.Column)(), _dec23 = Reflect.metadata("design:type", String), _dec24 = (0, _typeorm.Column)('timestamp'), _dec25 = Reflect.metadata("design:type", typeof Date === "undefined" ? Object : Date), _dec(_class = (_class2 = (_temp = class QuotationItem {
+}), _dec13 = Reflect.metadata("design:type", typeof _Quotation.default === "undefined" ? Object : _Quotation.default), _dec14 = (0, _typeorm.Column)(), _dec15 = Reflect.metadata("design:type", Number), _dec16 = (0, _typeorm.Column)(), _dec17 = Reflect.metadata("design:type", Number), _dec18 = (0, _typeorm.Column)(), _dec19 = Reflect.metadata("design:type", String), _dec20 = (0, _typeorm.Column)(), _dec21 = Reflect.metadata("design:type", String), _dec22 = (0, _typeorm.Column)(), _dec23 = Reflect.metadata("design:type", String), _dec24 = (0, _typeorm.Column)(), _dec25 = Reflect.metadata("design:type", String), _dec26 = (0, _typeorm.Column)(), _dec27 = Reflect.metadata("design:type", String), _dec28 = (0, _typeorm.Column)('timestamp'), _dec29 = Reflect.metadata("design:type", typeof Date === "undefined" ? Object : Date), _dec(_class = (_class2 = (_temp = class QuotationItem {
   constructor() {
     _initializerDefineProperty(this, "id", _descriptor, this);
 
@@ -47,7 +47,11 @@ let QuotationItem = (_dec = (0, _typeorm.Entity)('tb_cotacao_item'), _dec2 = (0,
 
     _initializerDefineProperty(this, "situacao", _descriptor10, this);
 
-    _initializerDefineProperty(this, "dh_inc", _descriptor11, this);
+    _initializerDefineProperty(this, "condicao_peca", _descriptor11, this);
+
+    _initializerDefineProperty(this, "observacao", _descriptor12, this);
+
+    _initializerDefineProperty(this, "dh_inc", _descriptor13, this);
   }
 
 }, _temp), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "id", [_dec2, _dec3], {
@@ -100,7 +104,17 @@ let QuotationItem = (_dec = (0, _typeorm.Entity)('tb_cotacao_item'), _dec2 = (0,
   enumerable: true,
   writable: true,
   initializer: null
-}), _descriptor11 = _applyDecoratedDescriptor(_class2.prototype, "dh_inc", [_dec24, _dec25], {
+}), _descriptor11 = _applyDecoratedDescriptor(_class2.prototype, "condicao_peca", [_dec24, _dec25], {
+  configurable: true,
+  enumerable: true,
+  writable: true,
+  initializer: null
+}), _descriptor12 = _applyDecoratedDescriptor(_class2.prototype, "observacao", [_dec26, _dec27], {
+  configurable: true,
+  enumerable: true,
+  writable: true,
+  initializer: null
+}), _descriptor13 = _applyDecoratedDescriptor(_class2.prototype, "dh_inc", [_dec28, _dec29], {
   configurable: true,
   enumerable: true,
   writable: true,

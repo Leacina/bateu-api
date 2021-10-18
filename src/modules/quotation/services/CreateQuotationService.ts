@@ -21,6 +21,8 @@ const ioClientConnect = ioClient('https://bateuweb.com.br/', {
 interface IRequestItems {
   descricao_peca: string;
   quantidade_solicitada: number;
+  condicao_peca: string;
+  observacao: string;
 }
 
 interface IRequestBudget {
@@ -154,7 +156,12 @@ export default class CreateQuotationService {
         const quotationItems: ICreateQuotationItemDTO[] = [];
 
         items.map(async item => {
-          const { descricao_peca, quantidade_solicitada } = item;
+          const {
+            descricao_peca,
+            quantidade_solicitada,
+            condicao_peca,
+            observacao,
+          } = item;
 
           quotationItems.push({
             descricao_peca,
@@ -163,6 +170,8 @@ export default class CreateQuotationService {
             id_cotacao: Number(quotation.id),
             situacao: 'Pendente',
             dh_inc: new Date(),
+            condicao_peca,
+            observacao,
           });
         });
         // eslint-disable-next-line no-await-in-loop

@@ -17,6 +17,8 @@ var _IMailProvider = _interopRequireDefault(require("../../../shared/container/p
 
 var _path = _interopRequireDefault(require("path"));
 
+var _NotificationServiceWorker = _interopRequireDefault(require("../../../shared/utils/implementations/NotificationServiceWorker"));
+
 var _IQuotationItemsRepository = _interopRequireDefault(require("../repositories/IQuotationItemsRepository"));
 
 var _IQuotationsRepository = _interopRequireDefault(require("../repositories/IQuotationsRepository"));
@@ -64,6 +66,13 @@ let UpdateValueItemQuotationProcessService = (_dec = (0, _tsyringe.injectable)()
     const quotation = await this.quotationsRepository.findById(Number(budgetItem.id_cotacao)); // Busca o usuário para saber qual o id para notificar
 
     const usuario = await this.usersRepository.findByEmail(quotation.emitente_email);
+    const notificationServiceWorker = new _NotificationServiceWorker.default();
+
+    if (usuario.sw_notification) {
+      // ServiceWorker
+      notificationServiceWorker.sendNotification(usuario.sw_notification, `O item ${budgetItem.descricao_peca} da sua cotação ${quotation.identificador_cotacao} teve uma alteração pela loja ${quotation.loja.nm_loja}.`, '');
+    }
+
     const notification = await this.notificationsRepository.create({
       id_cotacao: Number(quotation.id),
       id_usuario: Number(usuario.id),

@@ -4,6 +4,7 @@ import INotificationsRepository from '@modules/users/repositories/INotifications
 import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
 import path from 'path';
+import NotificationServiceWorker from '@shared/utils/implementations/NotificationServiceWorker';
 import IQuotationItemsRepository from '../repositories/IQuotationItemsRepository';
 import QuotationItem from '../infra/typeorm/entities/QuotationItem';
 import IQuotationsRepository from '../repositories/IQuotationsRepository';
@@ -61,6 +62,17 @@ export default class UpdateValueItemQuotationProcessService {
     const usuario = await this.usersRepository.findByEmail(
       quotation.emitente_email,
     );
+
+    const notificationServiceWorker = new NotificationServiceWorker();
+
+    if (usuario.sw_notification) {
+      // ServiceWorker
+      notificationServiceWorker.sendNotification(
+        usuario.sw_notification,
+        `O item ${budgetItem.descricao_peca} da sua cotação ${quotation.identificador_cotacao} teve uma alteração pela loja ${quotation.loja.nm_loja}.`,
+        '',
+      );
+    }
 
     const notification = await this.notificationsRepository.create({
       id_cotacao: Number(quotation.id),

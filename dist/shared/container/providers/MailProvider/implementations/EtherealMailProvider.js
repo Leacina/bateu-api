@@ -28,7 +28,7 @@ let EtherealMailProvider = (_dec = (0, _tsyringe.injectable)(), _dec2 = function
       secure: true,
       auth: {
         user: 'equipebateu@gmail.com',
-        pass: 'S3NHAequipebateu'
+        pass: ''
       }
     }); // nodemailer.createTestAccount().then(account => {
     //   this.client = nodemailer.createTransport({

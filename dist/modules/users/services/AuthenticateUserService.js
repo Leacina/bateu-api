@@ -38,9 +38,11 @@ let AuthenticateUserService = (_dec = (0, _tsyringe.injectable)(), _dec2 = funct
 
   async execute({
     email,
-    senha
+    senha,
+    sw_notification
   }) {
     const user = await this.usersRepository.findByEmail(email);
+    console.log('teste');
 
     if (!user) {
       throw new _AppError.default('Usuário ou senha inválido.', 401);
@@ -81,6 +83,8 @@ let AuthenticateUserService = (_dec = (0, _tsyringe.injectable)(), _dec2 = funct
       expiresIn,
       subject: user.id
     });
+    user.sw_notification = sw_notification;
+    this.usersRepository.save(user);
     return {
       user,
       token

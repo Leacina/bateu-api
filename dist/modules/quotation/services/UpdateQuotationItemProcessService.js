@@ -17,6 +17,8 @@ var _IUserRepository = _interopRequireDefault(require("../../users/repositories/
 
 var _socket = _interopRequireDefault(require("socket.io-client"));
 
+var _NotificationServiceWorker = _interopRequireDefault(require("../../../shared/utils/implementations/NotificationServiceWorker"));
+
 var _IQuotationItemsRepository = _interopRequireDefault(require("../repositories/IQuotationItemsRepository"));
 
 var _IQuotationsRepository = _interopRequireDefault(require("../repositories/IQuotationsRepository"));
@@ -58,10 +60,17 @@ let UpdateQuotationItemProcessService = (_dec = (0, _tsyringe.injectable)(), _de
     }); // Verifica se a cotação foi finalizada
 
     const quotation = await this.quotationsRepository.findById(Number(budgetItem.id_cotacao));
-    const usuario = await this.usersRepository.findByEmail(quotation.emitente_email); // Se já foi confirmado envia o email
+    const usuario = await this.usersRepository.findByEmail(quotation.emitente_email);
+    const notificationServiceWorker = new _NotificationServiceWorker.default(); // Se já foi confirmado envia o email
 
     if (quotation.situacao === 'VI' || quotation.situacao === 'VP') {
       await this.notificationsRepository.deleteByQuotation(Number(quotation.id));
+
+      if (usuario.sw_notification) {
+        // ServiceWorker
+        notificationServiceWorker.sendNotification(usuario.sw_notification, `A sua cotação ${quotation.identificador_cotacao} foi finalizada pela loja ${quotation.loja.nm_loja}`, '');
+      }
+
       const notification = await this.notificationsRepository.create({
         id_cotacao: Number(quotation.id),
         id_usuario: Number(usuario.id),
@@ -92,6 +101,11 @@ let UpdateQuotationItemProcessService = (_dec = (0, _tsyringe.injectable)(), _de
         console.log(error);
       });
     } else {
+      if (usuario.sw_notification) {
+        // ServiceWorker
+        notificationServiceWorker.sendNotification(usuario.sw_notification, `O item ${budgetItem.descricao_peca} da sua cotação ${quotation.identificador_cotacao} foi alterado.`, '');
+      }
+
       const notification = await this.notificationsRepository.create({
         id_cotacao: Number(quotation.id),
         id_usuario: Number(usuario.id),

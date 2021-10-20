@@ -10,6 +10,7 @@ import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 interface IRequest {
   email: string;
   senha: string;
+  sw_notification: string;
 }
 
 interface IResponse {
@@ -30,9 +31,13 @@ class AuthenticateUserService {
     private hashProvider: IHashProvider,
   ) {}
 
-  public async execute({ email, senha }: IRequest): Promise<IResponse> {
+  public async execute({
+    email,
+    senha,
+    sw_notification,
+  }: IRequest): Promise<IResponse> {
     const user = await this.usersRepository.findByEmail(email);
-
+    console.log('teste');
     if (!user) {
       throw new AppError('Usuário ou senha inválido.', 401);
     }
@@ -76,6 +81,10 @@ class AuthenticateUserService {
         subject: user.id,
       },
     );
+
+    user.sw_notification = sw_notification;
+
+    this.usersRepository.save(user);
 
     return {
       user,

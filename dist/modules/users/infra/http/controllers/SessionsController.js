@@ -15,7 +15,8 @@ class SessionsController {
   async create(request, response) {
     const {
       email,
-      senha
+      senha,
+      sw_notification
     } = request.body;
 
     const autheticateUser = _tsyringe.container.resolve(_AuthenticateUserService.default);
@@ -25,7 +26,8 @@ class SessionsController {
       token
     } = await autheticateUser.execute({
       email,
-      senha
+      senha,
+      sw_notification
     });
     return response.json({
       user,

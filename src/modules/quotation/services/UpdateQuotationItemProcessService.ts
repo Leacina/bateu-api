@@ -4,6 +4,7 @@ import IMailProvider from '@shared/container/providers/MailProvider/models/IMail
 import INotificationsRepository from '@modules/users/repositories/INotificationsRepository';
 import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import ioClient from 'socket.io-client';
+import NotificationServiceWorker from '@shared/utils/implementations/NotificationServiceWorker';
 import IQuotationItemsRepository from '../repositories/IQuotationItemsRepository';
 import QuotationItem from '../infra/typeorm/entities/QuotationItem';
 import IQuotationsRepository from '../repositories/IQuotationsRepository';
@@ -55,11 +56,22 @@ export default class UpdateQuotationItemProcessService {
       quotation.emitente_email,
     );
 
+    const notificationServiceWorker = new NotificationServiceWorker();
+
     // Se já foi confirmado envia o email
     if (quotation.situacao === 'VI' || quotation.situacao === 'VP') {
       await this.notificationsRepository.deleteByQuotation(
         Number(quotation.id),
       );
+
+      if (usuario.sw_notification) {
+        // ServiceWorker
+        notificationServiceWorker.sendNotification(
+          usuario.sw_notification,
+          `A sua cotação ${quotation.identificador_cotacao} foi finalizada pela loja ${quotation.loja.nm_loja}`,
+          '',
+        );
+      }
 
       const notification = await this.notificationsRepository.create({
         id_cotacao: Number(quotation.id),
@@ -99,6 +111,15 @@ export default class UpdateQuotationItemProcessService {
           console.log(error);
         });
     } else {
+      if (usuario.sw_notification) {
+        // ServiceWorker
+        notificationServiceWorker.sendNotification(
+          usuario.sw_notification,
+          `O item ${budgetItem.descricao_peca} da sua cotação ${quotation.identificador_cotacao} foi alterado.`,
+          '',
+        );
+      }
+
       const notification = await this.notificationsRepository.create({
         id_cotacao: Number(quotation.id),
         id_usuario: Number(usuario.id),

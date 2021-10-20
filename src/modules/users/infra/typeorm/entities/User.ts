@@ -60,6 +60,9 @@ class User {
 
   @Column()
   telefone: string;
+
+  @Column()
+  sw_notification: string;
 }
 
 export default User;

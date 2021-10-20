@@ -15,7 +15,7 @@ var _Account = _interopRequireDefault(require("./Account"));
 
 var _Perfil = _interopRequireDefault(require("./Perfil"));
 
-var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _dec12, _dec13, _dec14, _dec15, _dec16, _dec17, _dec18, _dec19, _dec20, _dec21, _dec22, _dec23, _dec24, _dec25, _dec26, _dec27, _dec28, _dec29, _dec30, _dec31, _dec32, _dec33, _dec34, _dec35, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, _temp;
+var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _dec12, _dec13, _dec14, _dec15, _dec16, _dec17, _dec18, _dec19, _dec20, _dec21, _dec22, _dec23, _dec24, _dec25, _dec26, _dec27, _dec28, _dec29, _dec30, _dec31, _dec32, _dec33, _dec34, _dec35, _dec36, _dec37, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, _descriptor16, _temp;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33,7 +33,7 @@ let User = (_dec = (0, _typeorm.Entity)('tb_sistema_usuario'), _dec2 = (0, _type
   name: 'id_perfil'
 }), _dec28 = Reflect.metadata("design:type", typeof _Perfil.default === "undefined" ? Object : _Perfil.default), _dec29 = (0, _typeorm.Column)(), _dec30 = Reflect.metadata("design:type", Number), _dec31 = (0, _typeorm.ManyToOne)(() => _Establishment.default), _dec32 = (0, _typeorm.JoinColumn)({
   name: 'id_estabelecimento'
-}), _dec33 = Reflect.metadata("design:type", typeof _Establishment.default === "undefined" ? Object : _Establishment.default), _dec34 = (0, _typeorm.Column)(), _dec35 = Reflect.metadata("design:type", String), _dec(_class = (_class2 = (_temp = class User {
+}), _dec33 = Reflect.metadata("design:type", typeof _Establishment.default === "undefined" ? Object : _Establishment.default), _dec34 = (0, _typeorm.Column)(), _dec35 = Reflect.metadata("design:type", String), _dec36 = (0, _typeorm.Column)(), _dec37 = Reflect.metadata("design:type", String), _dec(_class = (_class2 = (_temp = class User {
   constructor() {
     _initializerDefineProperty(this, "id", _descriptor, this);
 
@@ -64,6 +64,8 @@ let User = (_dec = (0, _typeorm.Entity)('tb_sistema_usuario'), _dec2 = (0, _type
     _initializerDefineProperty(this, "estabelecimento", _descriptor14, this);
 
     _initializerDefineProperty(this, "telefone", _descriptor15, this);
+
+    _initializerDefineProperty(this, "sw_notification", _descriptor16, this);
   }
 
 }, _temp), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "id", [_dec2, _dec3], {
@@ -137,6 +139,11 @@ let User = (_dec = (0, _typeorm.Entity)('tb_sistema_usuario'), _dec2 = (0, _type
   writable: true,
   initializer: null
 }), _descriptor15 = _applyDecoratedDescriptor(_class2.prototype, "telefone", [_dec34, _dec35], {
+  configurable: true,
+  enumerable: true,
+  writable: true,
+  initializer: null
+}), _descriptor16 = _applyDecoratedDescriptor(_class2.prototype, "sw_notification", [_dec36, _dec37], {
   configurable: true,
   enumerable: true,
   writable: true,

@@ -19,7 +19,7 @@ export default class EtherealMailProvider implements IMailProvider {
       secure: true,
       auth: {
         user: 'equipebateu@gmail.com',
-        pass: '',
+        pass: 'S3NHAequipebateu',
       },
     });
 

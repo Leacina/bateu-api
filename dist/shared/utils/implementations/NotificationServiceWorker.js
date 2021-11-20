@@ -28,9 +28,10 @@ class NotificationServiceWorker {
       notification: {
         title: 'BATEU',
         body: title,
+        icon: 'https://i.ibb.co/p4wc3Yy/play-store-512.png',
         vibrate: [100, 50, 100],
         data: {
-          url
+          url: url || 'https://bateuweb.com.br/'
         },
         actions: [{
           action: 'explore',
@@ -39,7 +40,7 @@ class NotificationServiceWorker {
       }
     };
 
-    _webPush.default.sendNotification(sub, JSON.stringify(payLoad));
+    _webPush.default.sendNotification(JSON.parse(sub), JSON.stringify(payLoad));
   }
 
 }

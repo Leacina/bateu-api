@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import fs from 'fs';
 import CreateImagePieceService from '@modules/piece/services/CreateImagePieceService';
 import ListImagePieceService from '@modules/piece/services/ListImagePieceService';
-import sharp from 'sharp';
 
 import uploadConfig from '@config/uploadImagePiece';
 
